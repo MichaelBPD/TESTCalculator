@@ -3,80 +3,78 @@
 <head>
     <title>Quote Calculator</title>
     <style>
-/* CSS styles for the Quote Calculator */
+        /* CSS styles for the Quote Calculator */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f6f9; /* Mild blue background */
+        }
 
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f7f7f7;
-}
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #007bff; /* Mild blue text */
+        }
 
-h1 {
-    text-align: center;
-    margin-top: 20px;
-    color: #333;
-}
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
 
-form {
-    max-width: 400px;
-    margin: 0 auto;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-}
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #007bff; /* Mild blue text */
+        }
 
-label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 5px;
-    color: #555;
-}
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #007bff; /* Mild blue border */
+            border-radius: 3px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
 
-input[type="number"] {
-    width: 100%; /* Make the input fields span the full width of the container */
-    padding: 8px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    font-size: 16px;
-    box-sizing: border-box; /* Include padding and border in the total width */
-}
+        button {
+            display: block;
+            width: 100%;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 3px;
+            font-size: 16px;
+            cursor: pointer;
+        }
 
-button {
-    display: block;
-    width: 100%;
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px;
-    border: none;
-    border-radius: 3px;
-    font-size: 16px;
-    cursor: pointer;
-}
+        button:hover {
+            background-color: #0056b3; /* Slightly darker blue on hover */
+        }
 
-button:hover {
-    background-color: #0056b3;
-}
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+            color: #007bff; /* Mild blue text */
+        }
 
-h2 {
-    text-align: center;
-    margin-top: 20px;
-    color: #333;
-}
+        p {
+            text-align: center;
+            margin-top: 10px;
+            color: #555;
+        }
 
-p {
-    text-align: center;
-    margin-top: 10px;
-    color: #555;
-}
-
-span {
-    font-weight: bold;
-    color: #007bff;
-}
-
+        span {
+            font-weight: bold;
+            color: #007bff; /* Mild blue text */
+        }
     </style>
 </head>
 <body>
@@ -117,7 +115,7 @@ span {
             const subbieCost = parseFloat(document.getElementById('subbieCost').value) || 0;
             const materialCost = parseFloat(document.getElementById('materialCost').value) || 0;
             const otherCost = parseFloat(document.getElementById('otherCost').value) || 0;
-    
+
             // Calculate Technician Cost, Apprentice Cost, and GP Percentage
             const techCost = techHours * 180;
             const appCost = appHours * 75;
@@ -136,7 +134,7 @@ span {
                 gpMessage.textContent = ''; // Clear the message if GP % is 70% or higher
             }
         }
-    
+
         // Add input event listeners to trigger calculations
         const inputFields = document.querySelectorAll('input');
         inputFields.forEach((input) => {
