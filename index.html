@@ -11,7 +11,21 @@
         padding: 0;
         background-color: #ffe100;
     }
-    
+        
+    .container{
+        display: flex; /* Create a flex container */
+        align-items: flex-start; /* Align items at the top */
+    }
+
+    .left-column {
+        flex: 1; /* Occupy one part of the flex container */
+        padding: 20px;
+    }
+
+    .right-column {
+        padding: 20px;
+    }
+        
     h1 {
         text-align: center;
         margin-top: 20px;
@@ -89,7 +103,10 @@
     .results-box p {
         color: #007bff;
     }
-
+        
+    .image {
+        max-width: 100%; /* Make sure the image doesn't exceed its container's width */
+    }
     </style>
 </head>
 <body>
@@ -114,12 +131,17 @@
         <input type="number" id="otherCost"><br>
     </form>
 
-    <div class="results-box">
-        <h2>Results:</h2>
-        <p>Technician Cost: $<span id="techCost">0.00</span></p>
-        <p>Apprentice Cost: $<span id="appCost">0.00</span></p>
-        <p>GP %: <span id="gpPercentage">0.00</span>%</p>
-        <p id="gpMessage"></p>
+    <div class="container">
+        <div class="left-column">
+            <h2>Results:</h2>
+            <p>Technician Cost: $<span id="techCost">0.00</span></p>
+            <p>Apprentice Cost: $<span id="appCost">0.00</span></p>
+            <p>GP %: <span id="gpPercentage">0.00</span>%</p>
+            <p id="gpMessage"></p>
+        </div>
+        <div class="right-column">
+            <img class="image" src="Logo.png" alt="Image">
+        </div>
     </div>
 
     <script>
