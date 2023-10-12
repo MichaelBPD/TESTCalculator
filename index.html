@@ -3,78 +3,80 @@
 <head>
     <title>Quote Calculator</title>
     <style>
-        /* CSS styles for the Quote Calculator */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f6f9; /* Mild blue background */
-        }
+/* CSS styles for the Quote Calculator */
 
-        h1 {
-            text-align: center;
-            margin-top: 20px;
-            color: #021c4d; /* Navy blue text */
-        }
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffe100;
+}
 
-        form {
-            max-width: 400px;
-            margin: 0 auto;
-            background-color: #cceeff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-        }
+h1 {
+    text-align: center;
+    margin-top: 20px;
+    color: #ec008c;
+}
 
-        label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
-            color: #000000; /* Black  text */
-        }
+form {
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
 
-        input[type="number"] {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #007bff; /* Mild blue border */
-            border-radius: 3px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
 
-        button {
-            display: block;
-            width: 100%;
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px;
-            border: none;
-            border-radius: 3px;
-            font-size: 16px;
-            cursor: pointer;
-        }
+input[type="number"] {
+    width: 100%; /* Make the input fields span the full width of the container */
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 16px;
+    box-sizing: border-box; /* Include padding and border in the total width */
+}
 
-        button:hover {
-            background-color: #0056b3; /* Slightly darker blue on hover */
-        }
+button {
+    display: block;
+    width: 100%;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+    font-size: 16px;
+    cursor: pointer;
+}
 
-        h2 {
-            text-align: center;
-            margin-top: 20px;
-            color: #021c4d; /* Navy blue text */
-        }
+button:hover {
+    background-color: #0056b3;
+}
 
-        p {
-            text-align: center;
-            margin-top: 10px;
-            color: #555;
-        }
+h2 {
+    text-align: center;
+    margin-top: 20px;
+    color: #ec008c;
+}
 
-        span {
-            font-weight: bold;
-            color: #007bff; /* Mild blue text */
-        }
+p {
+    text-align: center;
+    margin-top: 10px;
+    color: #555;
+}
+
+span {
+    font-weight: bold;
+    color: #007bff;
+}
+
     </style>
 </head>
 <body>
@@ -115,7 +117,7 @@
             const subbieCost = parseFloat(document.getElementById('subbieCost').value) || 0;
             const materialCost = parseFloat(document.getElementById('materialCost').value) || 0;
             const otherCost = parseFloat(document.getElementById('otherCost').value) || 0;
-
+    
             // Calculate Technician Cost, Apprentice Cost, and GP Percentage
             const techCost = techHours * 180;
             const appCost = appHours * 75;
@@ -134,7 +136,7 @@
                 gpMessage.textContent = ''; // Clear the message if GP % is 70% or higher
             }
         }
-
+    
         // Add input event listeners to trigger calculations
         const inputFields = document.querySelectorAll('input');
         inputFields.forEach((input) => {
