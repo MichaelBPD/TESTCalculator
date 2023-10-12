@@ -111,6 +111,13 @@
     .image {
         max-width: 100%; /* Make sure the image doesn't exceed its container's width */
     }
+        
+    .quote-variation {
+        font-weight: bold;
+        color: #ff4500; /* Adjust the color to your preference */
+        /* Add any other styles you want here */
+    }
+
     </style>
 </head>
 <body>
@@ -172,7 +179,7 @@
             document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
             const gpMessage = document.getElementById('gpMessage');
             if (gpPercentage < 70) {
-                gpMessage.textContent = 'Change quoted price to $' + Math.ceil(quoteVariation) + ' for 70% GP';
+                gpMessage.innerHTML = 'Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span> for 70% GP';
             } else {
                 gpMessage.textContent = ''; // Clear the message if GP % is 70% or higher
             }
