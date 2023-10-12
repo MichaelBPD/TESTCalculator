@@ -14,22 +14,19 @@
         
     .container{
         display: flex; /* Create a flex container */
-        align-items: flex-start; /* Align items at the top */
+        justify-content: center; /* Center the container horizontally */
+        align-items: center; /* Align items at the top */
         max-width: 400px;
         background-color: #fff;
+        min-height: 100vh; /* Ensure the container covers the viewport height */
         padding: 20px;
         border-radius: 5px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
         text-align: center;
         margin-top: 20px;
-    }
 
-    .left-column {
-        flex: 1; /* Occupy one part of the flex container */
-        padding: 20px;
-    }
-
-    .right-column {
+    .left-column, .right-column {
+        flex: 1; /* Both columns occupy an equal share of the container */
         padding: 20px;
     }
         
