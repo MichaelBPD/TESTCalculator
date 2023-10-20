@@ -120,6 +120,17 @@
     </style>
 </head>
 <body>
+     <script>
+        // Define the correct password
+        const correctPassword = "my_secret_password";
+
+        // Ask the user for the password
+        const enteredPassword = prompt("Please enter the password:");
+
+        // Check if the entered password is correct
+        if (enteredPassword === correctPassword) {
+            // Password is correct, display the quote calculator
+            document.write(`
     <h1>Quote Calculator</h1>
     <form>
         <label for="quoteTotal">Quote Total:</label>
@@ -192,6 +203,11 @@
 
         // Initial calculation
         calculate();
+        `);
+        } else {
+            // Password is incorrect, display an error message
+            document.write("<p>Access denied. Incorrect password.</p>");
+        }
     </script>
 </body>
 </html>
