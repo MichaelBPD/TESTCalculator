@@ -120,87 +120,65 @@
     </style>
 </head>
 <body>
-     <script>
+    <script>
         // Define the correct password
         const correctPassword = "8008";
-
-        // Ask the user for the password
         const enteredPassword = prompt("Please enter the password:");
 
-        // Check if the entered password is correct
         if (enteredPassword === correctPassword) {
-            // Password is correct, display the quote calculator
-            document.write(`
-   <h1>Quote Calculator</h1>
-    <form>
-        <label for="techHours">Technician Hours:</label>
-        <input type="number" id="techHours"><br>
+            // Inserting your form and container directly into the body
+            document.body.innerHTML = `
+                <h1>Quote Calculator</h1>
+                <form>
+                    <label for="techHours">Technician Hours:</label>
+                    <input type="number" id="techHours"><br>
 
-        <label for="apprenticeHours">Apprentice Hours:</label>
-        <input type="number" id="apprenticeHours"><br>
+                    <label for="apprenticeHours">Apprentice Hours:</label>
+                    <input type="number" id="apprenticeHours"><br>
 
-        <label for="subbieCost">Subbie Cost:</label>
-        <input type="number" id="subbieCost"><br>
+                    <label for="subbieCost">Subbie Cost:</label>
+                    <input type="number" id="subbieCost"><br>
 
-        <label for="materialCost">Material Cost:</label>
-        <input type="number" id="materialCost"><br>
+                    <label for="materialCost">Material Cost:</label>
+                    <input type="number" id="materialCost"><br>
 
-        <label for="otherCost">Other Cost:</label>
-        <input type="number" id="otherCost"><br>
-        
-        <label for="quoteTotal">Quote Total:</label>
-        <input type="number" id="quoteTotal"><br>    </form>
-    <div class="container">
-        <div class="left-column">
-            <h2>Results:</h2>
-            <p>GP %: <span id="gpPercentage">0.00</span>%</p>
-            <p id="gpMessage"></p>
-        </div>
-        <div class="right-column">
-            <img class="image" src="Logo.png" alt="Image">
-        </div>
-    </div>
+                    <label for="otherCost">Other Cost:</label>
+                    <input type="number" id="otherCost"><br>
+                    
+                    <label for="quoteTotal">Quote Total:</label>
+                    <input type="number" id="quoteTotal"><br>    
+                </form>
+                <div class="container">
+                    <div class="left-column">
+                        <h2>Results:</h2>
+                        <p>GP %: <span id="gpPercentage">0.00</span>%</p>
+                        <p id="gpMessage"></p>
+                    </div>
+                    <div class="right-column">
+                        <img class="image" src="Logo.png" alt="Image">
+                    </div>
+                </div>
+            `;
+        } else {
+            document.body.innerHTML = "<p>Access denied. Incorrect password.</p>";
+        }
+    </script>
 
     <script>
         // Function to calculate the results
         function calculate() {
-            // Get values from input fields and convert empty/null values to 0
-            const quoteTotal = parseFloat(document.getElementById('quoteTotal').value) || 0;
-            const techHours = parseFloat(document.getElementById('techHours').value) || 0;
-            const appHours = parseFloat(document.getElementById('apprenticeHours').value) || 0;
-            const subbieCost = parseFloat(document.getElementById('subbieCost').value) || 0;
-            const materialCost = parseFloat(document.getElementById('materialCost').value) || 0;
-            const otherCost = parseFloat(document.getElementById('otherCost').value) || 0;
-    
-            // Calculate Technician Cost, Apprentice Cost, and GP Percentage
-            const techCost = techHours * 180;
-            const appCost = appHours * 135;
-            const TotalCost = techCost + appCost + subbieCost + materialCost + otherCost;
-            const gpPercentage = ((quoteTotal - TotalCost) / quoteTotal) * 100;
-            const quoteVariation = (TotalCost / 0.3);
-
-            // Update the result elements
-            document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
-            const gpMessage = document.getElementById('gpMessage');
-            if (gpPercentage < 70) {
-                gpMessage.innerHTML = 'Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span> for 70% GP';
-            } else {
-                gpMessage.textContent = ''; // Clear the message if GP % is 70% or higher
-            }
+            // ... rest of your calculate function ...
         }
-    
-        // Add input event listeners to trigger calculations
-        const inputFields = document.querySelectorAll('input');
-        inputFields.forEach((input) => {
-            input.addEventListener('input', calculate);
-        });
 
-        // Initial calculation
-        calculate();
-        `);
-        } else {
-            // Password is incorrect, display an error message
-            document.write("<p>Access denied. Incorrect password.</p>");
+        // Only set up the event listeners if the password was correct
+        if (document.getElementById('techHours')) {
+            const inputFields = document.querySelectorAll('input');
+            inputFields.forEach((input) => {
+                input.addEventListener('input', calculate);
+            });
+
+            // Initial calculation
+            calculate();
         }
     </script>
 </body>
