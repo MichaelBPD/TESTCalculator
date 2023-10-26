@@ -167,8 +167,31 @@
     <script>
         // Function to calculate the results
         function calculate() {
-            // ... rest of your calculate function ...
+            // Get values from input fields and convert empty/null values to 0
+            const quoteTotal = parseFloat(document.getElementById('quoteTotal').value) || 0;
+            const techHours = parseFloat(document.getElementById('techHours').value) || 0;
+            const appHours = parseFloat(document.getElementById('apprenticeHours').value) || 0;
+            const subbieCost = parseFloat(document.getElementById('subbieCost').value) || 0;
+            const materialCost = parseFloat(document.getElementById('materialCost').value) || 0;
+            const otherCost = parseFloat(document.getElementById('otherCost').value) || 0;
+    
+            // Calculate Technician Cost, Apprentice Cost, and GP Percentage
+            const techCost = techHours * 180;
+            const appCost = appHours * 135;
+            const TotalCost = techCost + appCost + subbieCost + materialCost + otherCost;
+            const gpPercentage = ((quoteTotal - TotalCost) / quoteTotal) * 100;
+            const quoteVariation = (TotalCost / 0.3);
+
+            // Update the result elements
+            document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
+            const gpMessage = document.getElementById('gpMessage');
+            if (gpPercentage < 70) {
+                gpMessage.innerHTML = 'Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span> for 70% GP';
+            } else {
+                gpMessage.textContent = ''; // Clear the message if GP % is 70% or higher
+            }
         }
+    
 
         // Only set up the event listeners if the password was correct
         if (document.getElementById('techHours')) {
