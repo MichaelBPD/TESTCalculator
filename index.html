@@ -131,11 +131,8 @@
         if (enteredPassword === correctPassword) {
             // Password is correct, display the quote calculator
             document.write(`
-    <h1>Quote Calculator</h1>
+   <h1>Quote Calculator</h1>
     <form>
-        <label for="quoteTotal">Quote Total:</label>
-        <input type="number" id="quoteTotal"><br>
-
         <label for="techHours">Technician Hours:</label>
         <input type="number" id="techHours"><br>
 
@@ -150,13 +147,12 @@
 
         <label for="otherCost">Other Cost:</label>
         <input type="number" id="otherCost"><br>
-    </form>
-
+        
+        <label for="quoteTotal">Quote Total:</label>
+        <input type="number" id="quoteTotal"><br>    </form>
     <div class="container">
         <div class="left-column">
             <h2>Results:</h2>
-            <p>Technician Cost: $<span id="techCost">0.00</span></p>
-            <p>Apprentice Cost: $<span id="appCost">0.00</span></p>
             <p>GP %: <span id="gpPercentage">0.00</span>%</p>
             <p id="gpMessage"></p>
         </div>
@@ -178,14 +174,12 @@
     
             // Calculate Technician Cost, Apprentice Cost, and GP Percentage
             const techCost = techHours * 180;
-            const appCost = appHours * 75;
+            const appCost = appHours * 135;
             const TotalCost = techCost + appCost + subbieCost + materialCost + otherCost;
             const gpPercentage = ((quoteTotal - TotalCost) / quoteTotal) * 100;
             const quoteVariation = (TotalCost / 0.3);
 
             // Update the result elements
-            document.getElementById('techCost').textContent = techCost.toFixed(2);
-            document.getElementById('appCost').textContent = appCost.toFixed(2);
             document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
             const gpMessage = document.getElementById('gpMessage');
             if (gpPercentage < 70) {
