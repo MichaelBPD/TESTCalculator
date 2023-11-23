@@ -5,11 +5,11 @@
     <style>
 /* CSS styles for the Quote Calculator */
 
-    body {
+   body {
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
-        background-color: #00890d;
+        background-color: #ffe100;
     }
         
     .container {
@@ -33,7 +33,7 @@
     h1 {
         text-align: center;
         margin-top: 20px;
-        color: #ffffff;
+        color: #ec008c;
     }
     
     form {
@@ -81,7 +81,7 @@
     h2 {
         text-align: center;
         margin-top: 20px;
-        color: #463a80;
+        color: #ec008c;
     }
     
     p {
@@ -92,7 +92,7 @@
     
     span {
         font-weight: bold;
-        color: #463a80;
+        color: #ec008c;
     }
     .results-box {
         max-width: 400px;
@@ -114,7 +114,7 @@
         
     .quote-variation {
         font-weight: bold;
-        color: #463a80; 
+        color: #ec008c; 
     }
 
     </style>
@@ -128,11 +128,8 @@
         if (enteredPassword === correctPassword) {
             // Inserting your form and container directly into the body
             document.body.innerHTML = `
-                 <h1>Quote Calculator</h1>
+                <h1>Quote Calculator</h1>
                 <form>
-                    <label for="quoteTotal">Quote Total:</label>
-                    <input type="number" id="quoteTotal"><br>
-            
                     <label for="techHours">Technician Hours:</label>
                     <input type="number" id="techHours"><br>
             
@@ -147,8 +144,9 @@
             
                     <label for="otherCost">Other Cost:</label>
                     <input type="number" id="otherCost"><br>
-                </form>
-            
+                    
+                    <label for="quoteTotal">Quote Total:</label>
+                    <input type="number" id="quoteTotal"><br>    </form>
                 <div class="container">
                     <div class="left-column">
                         <h2>Results:</h2>
@@ -167,7 +165,7 @@
 
     <script>
         // Function to calculate the results
- function calculate() {
+        function calculate() {
             // Get values from input fields and convert empty/null values to 0
             const quoteTotal = parseFloat(document.getElementById('quoteTotal').value) || 0;
             const techHours = parseFloat(document.getElementById('techHours').value) || 0;
@@ -177,19 +175,19 @@
             const otherCost = parseFloat(document.getElementById('otherCost').value) || 0;
     
             // Calculate Technician Cost, Apprentice Cost, and GP Percentage
-            const techCost = techHours * 210;
-            const appCost = appHours * 75;
+            const techCost = techHours * 180;
+            const appCost = appHours * 135;
             const TotalCost = techCost + appCost + subbieCost + materialCost + otherCost;
             const gpPercentage = ((quoteTotal - TotalCost) / quoteTotal) * 100;
-            const quoteVariation = (TotalCost / 0.35);
+            const quoteVariation = (TotalCost / 0.3);
 
             // Update the result elements
             document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
             const gpMessage = document.getElementById('gpMessage');
-            if (gpPercentage < 65) {
-                gpMessage.innerHTML = 'Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span> for 65% GP';
+            if (gpPercentage < 70) {
+                gpMessage.innerHTML = 'Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span> for 70% GP';
             } else {
-                gpMessage.textContent = ''; // Clear the message if GP % is 65% or higher
+                gpMessage.textContent = ''; // Clear the message if GP % is 70% or higher
             }
         }
     
