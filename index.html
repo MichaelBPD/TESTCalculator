@@ -11,6 +11,59 @@
         background-color: #ffe100;
     }
 
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #fff;
+    }
+
+    .login-box {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        max-width: 300px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .login-box h1 {
+        margin-bottom: 20px;
+        color: #ec008c;
+    }
+
+    .login-box input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .login-box button {
+        width: 100%;
+        background-color: #007bff;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .login-box button:hover {
+        background-color: #0056b3;
+    }
+
+    .login-box p {
+        color: red;
+        display: none; /* Hide the error message initially */
+    }
+
+    /* Quote Calculator styles */
     .container {
         display: flex;
         justify-content: center;
@@ -27,12 +80,6 @@
     .left-column, .right-column {
         flex: 1;
         padding: 10px;
-    }
-
-    h1 {
-        text-align: center;
-        margin-top: 20px;
-        color: #ec008c;
     }
 
     form {
@@ -58,7 +105,6 @@
         border: 1px solid #ccc;
         border-radius: 3px;
         font-size: 16px;
-        box-sizing: border-box;
     }
 
     button {
@@ -119,6 +165,52 @@
     </style>
 </head>
 <body>
+
+    <!-- Basic login form -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-box">
+            <h1>Login</h1>
+            <input type="password" id="passwordInput" placeholder="Enter password">
+            <button onclick="checkPassword()">Login</button>
+            <p id="errorMessage">Incorrect password, please try again.</p>
+        </div>
+    </div>
+
+    <!-- Hidden Quote Calculator -->
+    <div id="quoteCalculator" style="display: none;">
+        <h1>Quote Calculator</h1>
+        <form>
+            <label for="techHours">Technician Hours:</label>
+            <input type="number" id="techHours"><br>
+
+            <label for="apprenticeHours">Apprentice Hours:</label>
+            <input type="number" id="apprenticeHours"><br>
+
+            <label for="subbieCost">Subbie Cost:</label>
+            <input type="number" id="subbieCost"><br>
+
+            <label for="materialCost">Material Cost:</label>
+            <input type="number" id="materialCost"><br>
+
+            <label for="otherCost">Other Cost:</label>
+            <input type="number" id="otherCost"><br>
+
+            <label for="quoteTotal">Quote Total:</label>
+            <input type="number" id="quoteTotal"><br>    
+        </form>
+
+        <div class="container">
+            <div class="left-column">
+                <h2>Results:</h2>
+                <p>GP %: <span id="gpPercentage">0.00</span>%</p>
+                <p id="gpMessage"></p>
+            </div>
+            <div class="right-column">
+                <img class="image" src="Logo.png" alt="Image">
+            </div>
+        </div>
+    </div>
+
     <script>
         // Function to hash the password using SHA-256
         async function hashPassword(password) {
@@ -132,51 +224,19 @@
 
         const correctHashedPassword = "286C897EBA57CE67E79FFF80229D9EACDDDE784B29A18A1D47C17BADE5AD1A08"; 
 
-        // Prompt for the password and hash it
-        const enteredPassword = prompt("Please enter the password:");
+        // Function to check the entered password
+        async function checkPassword() {
+            const enteredPassword = document.getElementById('passwordInput').value;
+            const hashedPassword = await hashPassword(enteredPassword);
 
-        hashPassword(enteredPassword).then(hashedPassword => {
             if (hashedPassword === correctHashedPassword) {
-                // Inserting your form and container directly into the body
-                document.body.innerHTML = `
-                    <h1>Quote Calculator</h1>
-                    <form>
-                        <label for="techHours">Technician Hours:</label>
-                        <input type="number" id="techHours"><br>
-                
-                        <label for="apprenticeHours">Apprentice Hours:</label>
-                        <input type="number" id="apprenticeHours"><br>
-                
-                        <label for="subbieCost">Subbie Cost:</label>
-                        <input type="number" id="subbieCost"><br>
-                
-                        <label for="materialCost">Material Cost:</label>
-                        <input type="number" id="materialCost"><br>
-                
-                        <label for="otherCost">Other Cost:</label>
-                        <input type="number" id="otherCost"><br>
-                        
-                        <label for="quoteTotal">Quote Total:</label>
-                        <input type="number" id="quoteTotal"><br>    </form>
-                    <div class="container">
-                        <div class="left-column">
-                            <h2>Results:</h2>
-                            <p>GP %: <span id="gpPercentage">0.00</span>%</p>
-                            <p id="gpMessage"></p>
-                        </div>
-                        <div class="right-column">
-                            <img class="image" src="Logo.png" alt="Image">
-                        </div>
-                    </div>
-                `;
+                document.getElementById('loginContainer').style.display = 'none'; // Hide login form
+                document.getElementById('quoteCalculator').style.display = 'block'; // Show calculator
             } else {
-                document.body.innerHTML = "<p>Access denied. Incorrect password.</p>";
+                document.getElementById('errorMessage').style.display = 'block'; // Show error message
             }
-        });
+        }
 
-    </script>
-
-    <script>
         // Function to calculate the results
         function calculate() {
             const quoteTotal = parseFloat(document.getElementById('quoteTotal').value) || 0;
@@ -209,6 +269,3 @@
 
             calculate();
         }
-    </script>
-</body>
-</html>
