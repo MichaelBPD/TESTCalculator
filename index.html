@@ -215,21 +215,23 @@
             }
 
             let adjustedOtherCost = otherCost;
-            if (subbieCost > 500) {
-                adjustedSubbieCost = subbieCost * 0.375;
+            if (otherCost > 500) {
+                adjustedOtherCost = otherCost * 0.375;
             } else if (subbieCost > 250) {
-                adjustedSubbieCost = subbieCost * 0.471;
+                adjustedOtherCost = otherCost * 0.471;
             } else if (subbieCost > 100) {
-                adjustedSubbieCost = subbieCost * 0.516;
+                adjustedOtherCost = otherCost * 0.516;
             } else if (subbieCost > 50) {
-                adjustedSubbieCost = subbieCost * 0.576;
+                adjustedOtherCost = otherCost * 0.576;
             } else if (subbieCost > 25) {
-                adjustedSubbieCost = subbieCost * 0.606;
+                adjustedOtherCost = otherCost * 0.606;
             } else {
-                adjustedSubbieCost = subbieCost * 0.75;
+                adjustedOtherCost = otherCost * 0.75;
             }
+
+            const adjustedExternalSubbieCost = (externalSubbieCost * 5 / 3);
      
-            const TotalCost = techCost + appCost + adjustedSubbieCost + adjustedMaterialCost + adjustedOtherCost + externalSubbieCost;
+            const TotalCost = techCost + appCost + adjustedSubbieCost + adjustedMaterialCost + adjustedOtherCost + adjustedExternalSubbieCost;
             const gpPercentage = ((quoteTotal - TotalCost) / quoteTotal) * 100;
             const quoteVariation = (TotalCost / 0.3);
 
