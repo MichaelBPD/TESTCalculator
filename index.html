@@ -229,7 +229,7 @@
                 adjustedOtherCost = otherCost * 0.75;
             }
 
-            const adjustedExternalSubbieCost = (externalSubbieCost * 5 / 3);
+            const adjustedExternalSubbieCost = (externalSubbieCost / 5 * 3);
      
             const TotalCost = techCost + appCost + adjustedSubbieCost + adjustedMaterialCost + adjustedOtherCost + adjustedExternalSubbieCost;
             const gpPercentage = ((quoteTotal - TotalCost) / quoteTotal) * 100;
