@@ -3,85 +3,39 @@
 <head>
     <title>Quote Calculator</title>
     <style>
-    /* CSS styles for the Quote Calculator */
+/* CSS styles for the Quote Calculator */
+
     body {
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
-        background-color: #ffe100;
+        background-color: #00890d;
     }
-
-    .login-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #fff;
-    }
-
-    .login-box {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-        max-width: 300px;
-        width: 100%;
-        text-align: center;
-    }
-
-    .login-box h1 {
-        margin-bottom: 20px;
-        color: #ec008c;
-    }
-
-    .login-box input[type="password"] {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 16px;
-    }
-
-    .login-box button {
-        width: 100%;
-        background-color: #007bff;
-        color: white;
-        padding: 10px;
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: pointer;
-    }
-
-    .login-box button:hover {
-        background-color: #0056b3;
-    }
-
-    .login-box p {
-        color: red;
-        display: none; /* Hide the error message initially */
-    }
-
-    /* Quote Calculator styles */
+        
     .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 150px;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-        text-align: center;
-        margin: 20px auto;
-        max-width: 400px;
-    }
+    display: flex;
+    justify-content: center; /* Center the container horizontally */
+    align-items: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 150px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    margin: 20px auto; /* Center the container horizontally */
+    max-width: 400px; /* Set a maximum width */
+}
 
     .left-column, .right-column {
-        flex: 1;
+        flex: 1; /* Both columns occupy an equal share of the container */
         padding: 10px;
     }
-
+        
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+        color: #ffffff;
+    }
+    
     form {
         max-width: 400px;
         margin: 0 auto;
@@ -90,23 +44,24 @@
         border-radius: 20px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     }
-
+    
     label {
         font-weight: bold;
         display: block;
         margin-bottom: 5px;
         color: #555;
     }
-
+    
     input[type="number"] {
-        width: 100%;
+        width: 100%; /* Make the input fields span the full width of the container */
         padding: 8px;
         margin-bottom: 15px;
         border: 1px solid #ccc;
         border-radius: 3px;
         font-size: 16px;
+        box-sizing: border-box; /* Include padding and border in the total width */
     }
-
+    
     button {
         display: block;
         width: 100%;
@@ -118,28 +73,27 @@
         font-size: 16px;
         cursor: pointer;
     }
-
+    
     button:hover {
         background-color: #0056b3;
     }
-
+    
     h2 {
         text-align: center;
         margin-top: 20px;
-        color: #ec008c;
+        color: #463a80;
     }
-
+    
     p {
         text-align: center;
         margin-top: 10px;
         color: #555;
     }
-
+    
     span {
         font-weight: bold;
-        color: #ec008c;
+        color: #463a80;
     }
-
     .results-box {
         max-width: 400px;
         background-color: #fff;
@@ -153,119 +107,153 @@
     .results-box p {
         color: #007bff;
     }
-
+        
     .image {
-        max-width: 100%;
+        max-width: 100%; /* Make sure the image doesn't exceed its container's width */
     }
-
+        
     .quote-variation {
         font-weight: bold;
-        color: #ec008c; 
+        color: #463a80; 
     }
+
     </style>
 </head>
 <body>
+    <script>
+        // Define the correct password
+        const correctPassword = "8008";
+        const enteredPassword = prompt("Please enter the password:");
 
-    <!-- Basic login form -->
-    <div class="login-container" id="loginContainer">
-        <div class="login-box">
-            <h1>Login</h1>
-            <input type="password" id="passwordInput" placeholder="Enter password">
-            <button onclick="checkPassword()">Login</button>
-            <p id="errorMessage">Incorrect password, please try again.</p>
-        </div>
-    </div>
+        if (enteredPassword === correctPassword) {
+            // Inserting your form and container directly into the body
+            document.body.innerHTML = `
+                 <h1>Quote Calculator</h1>
+                <form>
+                    <label for="quoteTotal">Quote Total:</label>
+                    <input type="number" id="quoteTotal"><br>
+            
+                    <label for="techHours">Technician Hours:</label>
+                    <input type="number" id="techHours"><br>
+            
+                    <label for="apprenticeHours">Apprentice Hours:</label>
+                    <input type="number" id="apprenticeHours"><br>
+            
+                    <label for="subbieCost">Subbie Cost:</label>
+                    <input type="number" id="subbieCost"><br>
+            
+                    <label for="materialCost">Material Cost:</label>
+                    <input type="number" id="materialCost"><br>
+            
+                    <label for="otherCost">QBCC FORM 4, Home Insurance, Documentation, etc...:</label>
+                    <input type="number" id="otherCost"><br>
 
-    <!-- Hidden Quote Calculator -->
-    <div id="quoteCalculator" style="display: none;">
-        <h1>Quote Calculator</h1>
-        <form>
-            <label for="techHours">Technician Hours:</label>
-            <input type="number" id="techHours"><br>
-
-            <label for="apprenticeHours">Apprentice Hours:</label>
-            <input type="number" id="apprenticeHours"><br>
-
-            <label for="subbieCost">Subbie Cost:</label>
-            <input type="number" id="subbieCost"><br>
-
-            <label for="materialCost">Material Cost:</label>
-            <input type="number" id="materialCost"><br>
-
-            <label for="otherCost">Other Cost:</label>
-            <input type="number" id="otherCost"><br>
-
-            <label for="quoteTotal">Quote Total:</label>
-            <input type="number" id="quoteTotal"><br>    
-        </form>
-
-        <div class="container">
-            <div class="left-column">
-                <h2>Results:</h2>
-                <p>GP %: <span id="gpPercentage">0.00</span>%</p>
-                <p id="gpMessage"></p>
-            </div>
-            <div class="right-column">
-                <img class="image" src="Logo.png" alt="Image">
-            </div>
-        </div>
-    </div>
+                    <label for="otherCost">External Only Subbie Cost:</label>
+                    <input type="number" id="externalSubbieCost"><br>
+                </form>
+            
+                <div class="container">
+                    <div class="left-column">
+                        <h2>Results:</h2>
+                        <p>GP %: <span id="gpPercentage">0.00</span>%</p>
+                        <p id="gpMessage"></p>
+                    </div>
+                    <div class="right-column">
+                        <img class="image" src="Logo.png" alt="Image">
+                    </div>
+                </div>
+            `;
+        } else {
+            document.body.innerHTML = "<p>Access denied. Incorrect password.</p>";
+        }
+    </script>
 
     <script>
-        // Function to hash the password using SHA-256
-        async function hashPassword(password) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
-            return hashHex;
-        }
-
-        const correctHashedPassword = "286C897EBA57CE67E79FFF80229D9EACDDDE784B29A18A1D47C17BADE5AD1A08"; 
-
-        // Function to check the entered password
-        async function checkPassword() {
-            const enteredPassword = document.getElementById('passwordInput').value;
-            const hashedPassword = await hashPassword(enteredPassword);
-
-            if (hashedPassword === correctHashedPassword) {
-                document.getElementById('loginContainer').style.display = 'none'; // Hide login form
-                document.getElementById('quoteCalculator').style.display = 'block'; // Show calculator
-            } else {
-                document.getElementById('errorMessage').style.display = 'block'; // Show error message
-            }
-        }
-
         // Function to calculate the results
-        function calculate() {
+ function calculate() {
+            // Get values from input fields and convert empty/null values to 0
             const quoteTotal = parseFloat(document.getElementById('quoteTotal').value) || 0;
             const techHours = parseFloat(document.getElementById('techHours').value) || 0;
             const appHours = parseFloat(document.getElementById('apprenticeHours').value) || 0;
             const subbieCost = parseFloat(document.getElementById('subbieCost').value) || 0;
             const materialCost = parseFloat(document.getElementById('materialCost').value) || 0;
             const otherCost = parseFloat(document.getElementById('otherCost').value) || 0;
+            const externalSubbieCost = parseFloat(document.getElementById('externalSubbieCost').value) || 0;
+    
+            // Calculate Technician Cost, Apprentice Cost, and GP Percentage
+            const techCost = techHours * 195;
+            const appCost = appHours * 100;
 
-            const techCost = techHours * 180;
-            const appCost = appHours * 135;
-            const TotalCost = techCost + appCost + subbieCost + materialCost + otherCost;
+            let adjustedMaterialCost = materialCost;
+            if (materialCost > 500) {
+                adjustedMaterialCost = materialCost * 0.375;
+            } else if (materialCost > 250) {
+                adjustedMaterialCost = materialCost * 0.471;
+            } else if (materialCost > 100) {
+                adjustedMaterialCost = materialCost * 0.516;
+            } else if (materialCost > 55) {
+                adjustedMaterialCost = materialCost * 0.576;
+            } else if (materialCost > 25) {
+                adjustedMaterialCost = materialCost * 0.606;
+            } else {
+                adjustedMaterialCost = materialCost * 0.75;
+            }
+
+            let adjustedSubbieCost = subbieCost;
+            if (subbieCost > 500) {
+                adjustedSubbieCost = subbieCost * 0.375;
+            } else if (subbieCost > 250) {
+                adjustedSubbieCost = subbieCost * 0.471;
+            } else if (subbieCost > 100) {
+                adjustedSubbieCost = subbieCost * 0.516;
+            } else if (subbieCost > 50) {
+                adjustedSubbieCost = subbieCost * 0.576;
+            } else if (subbieCost > 25) {
+                adjustedSubbieCost = subbieCost * 0.606;
+            } else {
+                adjustedSubbieCost = subbieCost * 0.75;
+            }
+
+            let adjustedOtherCost = otherCost;
+            if (subbieCost > 500) {
+                adjustedSubbieCost = subbieCost * 0.375;
+            } else if (subbieCost > 250) {
+                adjustedSubbieCost = subbieCost * 0.471;
+            } else if (subbieCost > 100) {
+                adjustedSubbieCost = subbieCost * 0.516;
+            } else if (subbieCost > 50) {
+                adjustedSubbieCost = subbieCost * 0.576;
+            } else if (subbieCost > 25) {
+                adjustedSubbieCost = subbieCost * 0.606;
+            } else {
+                adjustedSubbieCost = subbieCost * 0.75;
+            }
+     
+            const TotalCost = techCost + appCost + adjustedSubbieCost + adjustedMaterialCost + adjustedOtherCost + externalSubbieCost;
             const gpPercentage = ((quoteTotal - TotalCost) / quoteTotal) * 100;
             const quoteVariation = (TotalCost / 0.3);
 
+            // Update the result elements
             document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
             const gpMessage = document.getElementById('gpMessage');
             if (gpPercentage < 70) {
                 gpMessage.innerHTML = 'Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span> for 70% GP';
             } else {
-                gpMessage.textContent = ''; 
+                gpMessage.textContent = ''; // Clear the message if GP % is 70% or higher
             }
         }
+    
 
+        // Only set up the event listeners if the password was correct
         if (document.getElementById('techHours')) {
             const inputFields = document.querySelectorAll('input');
             inputFields.forEach((input) => {
                 input.addEventListener('input', calculate);
             });
 
+            // Initial calculation
             calculate();
         }
+    </script>
+</body>
+</html>
