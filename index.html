@@ -199,34 +199,13 @@
                 adjustedMaterialCost = materialCost * 0.75;
             }
 
-            let adjustedSubbieCost = subbieCost;
-            if (subbieCost > 500) {
-                adjustedSubbieCost = subbieCost * 0.375;
-            } else if (subbieCost > 250) {
-                adjustedSubbieCost = subbieCost * 0.471;
-            } else if (subbieCost > 100) {
-                adjustedSubbieCost = subbieCost * 0.516;
-            } else if (subbieCost > 50) {
-                adjustedSubbieCost = subbieCost * 0.576;
-            } else if (subbieCost > 25) {
-                adjustedSubbieCost = subbieCost * 0.606;
-            } else {
-                adjustedSubbieCost = subbieCost * 0.75;
-            }
+            const adjustedSubbieCost = subbieCost * .375;
 
             let adjustedOtherCost = otherCost;
             if (otherCost > 500) {
-                adjustedOtherCost = otherCost * 0.375;
-            } else if (subbieCost > 250) {
-                adjustedOtherCost = otherCost * 0.471;
-            } else if (subbieCost > 100) {
-                adjustedOtherCost = otherCost * 0.516;
-            } else if (subbieCost > 50) {
-                adjustedOtherCost = otherCost * 0.576;
-            } else if (subbieCost > 25) {
-                adjustedOtherCost = otherCost * 0.606;
+                adjustedOtherCost = otherCost * 0.45;
             } else {
-                adjustedOtherCost = otherCost * 0.75;
+                adjustedOtherCost = otherCost * 0.6;
             }
 
             const adjustedExternalSubbieCost = (externalSubbieCost / 5 * 3);
