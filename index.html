@@ -199,14 +199,15 @@
                 adjustedMaterialCost = materialCost * 0.75;
             }
 
-            const adjustedSubbieCost = subbieCost * .375;
-
-            let adjustedOtherCost = otherCost;
-            if (otherCost > 500) {
-                adjustedOtherCost = otherCost * 0.45;
+            let adjustedSubbieCost = subbieCost;
+            if (subbieCost > 500) {
+                adjustedSubbieCost = subbieCost * 0.45;
             } else {
-                adjustedOtherCost = otherCost * 0.6;
+                adjustedSubbieCost = subbieCost * 0.6;
             }
+
+            const adjustedOtherCost = otherCost * .375;
+
 
             const adjustedExternalSubbieCost = (externalSubbieCost / 5 * 3);
      
