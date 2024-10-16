@@ -137,12 +137,20 @@
     <input type="number" id="materials" placeholder="Enter material cost"><br>
 </form>
 
-<h2>Breakdown:</h2>
+
+                <div class="container">
+                    <div class="left-column">
+                        <h2>Breakdown:</h2>
 <p>Materials: <span id="materialResult">0.00%</span></p>
 <p>Labour: <span id="labourResult">0.00%</span></p>
 <p>GST: <span id="gstResult">0.00%</span></p>
 <p>Admin: <span id="adminResult">0.00%</span></p>
 <p>Running: <span id="runningResult">0.00%</span></p>
+                    </div>
+                    <div class="right-column">
+                        <img class="image" src="Logo.png" alt="Image">
+                    </div>
+                </div>
 `;
         } else {
             document.body.innerHTML = "<p>Access denied. Incorrect password.</p>";
