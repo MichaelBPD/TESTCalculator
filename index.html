@@ -189,6 +189,9 @@ function calculateBreakdown() {
     const adminValue = (adminPercentage / 100) * cost;
     const runningValue = (runningPercentage / 100) * cost;
 
+    // Format values with commas
+    const formatValue = (value) => value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
     // Update the result elements to display percentage and actual values
     document.getElementById('materialResult').textContent = materialPercentage.toFixed(2) + '% ($' + formatValue(materialValue) + ')';
     document.getElementById('labourResult').textContent = labourPercentage.toFixed(2) + '% ($' + formatValue(labourValue) + ')';
