@@ -150,42 +150,50 @@
     </script>
 
 <script>
-    function calculateBreakdown() {
-        const cost = parseFloat(document.getElementById('cost').value) || 0;
-        const materials = parseFloat(document.getElementById('materials').value) || 0;
+function calculateBreakdown() {
+    const cost = parseFloat(document.getElementById('cost').value) || 0;
+    const materials = parseFloat(document.getElementById('materials').value) || 0;
 
-        let materialPercentage, labourPercentage, gstPercentage, adminPercentage, runningPercentage;
+    let materialPercentage, labourPercentage, gstPercentage, adminPercentage, runningPercentage;
 
-        if (materials > 0) {
-            materialPercentage = (materials / cost) * 100;
-            const remainingPercentage = 100 - materialPercentage;
+    if (materials > 0) {
+        materialPercentage = (materials / cost) * 100;
+        const remainingPercentage = 100 - materialPercentage;
 
-            // Proportionally distribute remaining percentages
-            labourPercentage = remainingPercentage * 0.3;
-            gstPercentage = remainingPercentage * 0.1;
-            adminPercentage = remainingPercentage * 0.2;
-            runningPercentage = remainingPercentage * 0.2;
-        } else {
-            // Default percentages when no materials are entered
-            materialPercentage = 20;
-            labourPercentage = 30;
-            gstPercentage = 10;
-            adminPercentage = 20;
-            runningPercentage = 20;
-        }
-
-        // Update the result elements
-        document.getElementById('materialResult').textContent = materialPercentage.toFixed(2) + '%';
-        document.getElementById('labourResult').textContent = labourPercentage.toFixed(2) + '%';
-        document.getElementById('gstResult').textContent = gstPercentage.toFixed(2) + '%';
-        document.getElementById('adminResult').textContent = adminPercentage.toFixed(2) + '%';
-        document.getElementById('runningResult').textContent = runningPercentage.toFixed(2) + '%';
+        // Proportionally distribute remaining percentages
+        labourPercentage = remainingPercentage * 0.3;
+        gstPercentage = remainingPercentage * 0.1;
+        adminPercentage = remainingPercentage * 0.2;
+        runningPercentage = remainingPercentage * 0.2;
+    } else {
+        // Default percentages when no materials are entered
+        materialPercentage = 20;
+        labourPercentage = 30;
+        gstPercentage = 10;
+        adminPercentage = 20;
+        runningPercentage = 20;
     }
 
-    // Add event listeners
-    document.querySelectorAll('input').forEach(input => {
-        input.addEventListener('input', calculateBreakdown);
-    });
+    // Calculate the actual values
+    const materialValue = (materialPercentage / 100) * cost;
+    const labourValue = (labourPercentage / 100) * cost;
+    const gstValue = (gstPercentage / 100) * cost;
+    const adminValue = (adminPercentage / 100) * cost;
+    const runningValue = (runningPercentage / 100) * cost;
+
+    // Update the result elements to display percentage and actual values
+    document.getElementById('materialResult').textContent = materialPercentage.toFixed(2) + '% (' + materialValue.toFixed(2) + ')';
+    document.getElementById('labourResult').textContent = labourPercentage.toFixed(2) + '% (' + labourValue.toFixed(2) + ')';
+    document.getElementById('gstResult').textContent = gstPercentage.toFixed(2) + '% (' + gstValue.toFixed(2) + ')';
+    document.getElementById('adminResult').textContent = adminPercentage.toFixed(2) + '% (' + adminValue.toFixed(2) + ')';
+    document.getElementById('runningResult').textContent = runningPercentage.toFixed(2) + '% (' + runningValue.toFixed(2) + ')';
+}
+
+// Add event listeners to inputs
+document.querySelectorAll('input').forEach(input => {
+    input.addEventListener('input', calculateBreakdown);
+});
+
 </script>
 
 </body>
