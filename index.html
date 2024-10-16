@@ -182,11 +182,11 @@ function calculateBreakdown() {
     const runningValue = (runningPercentage / 100) * cost;
 
     // Update the result elements to display percentage and actual values
-    document.getElementById('materialResult').textContent = materialPercentage.toFixed(2) + '% (' + materialValue.toFixed(2) + ')';
-    document.getElementById('labourResult').textContent = labourPercentage.toFixed(2) + '% (' + labourValue.toFixed(2) + ')';
-    document.getElementById('gstResult').textContent = gstPercentage.toFixed(2) + '% (' + gstValue.toFixed(2) + ')';
-    document.getElementById('adminResult').textContent = adminPercentage.toFixed(2) + '% (' + adminValue.toFixed(2) + ')';
-    document.getElementById('runningResult').textContent = runningPercentage.toFixed(2) + '% (' + runningValue.toFixed(2) + ')';
+    document.getElementById('materialResult').textContent = materialPercentage.toFixed(2) + '% ($' + materialValue.toFixed(2) + ')';
+    document.getElementById('labourResult').textContent = labourPercentage.toFixed(2) + '% ($' + labourValue.toFixed(2) + ')';
+    document.getElementById('gstResult').textContent = gstPercentage.toFixed(2) + '% ($' + gstValue.toFixed(2) + ')';
+    document.getElementById('adminResult').textContent = adminPercentage.toFixed(2) + '% ($' + adminValue.toFixed(2) + ')';
+    document.getElementById('runningResult').textContent = runningPercentage.toFixed(2) + '% ($' + runningValue.toFixed(2) + ')';
 }
 
 // Add event listeners to inputs
