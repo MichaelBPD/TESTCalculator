@@ -128,7 +128,7 @@
         if (enteredPassword === correctPassword) {
             // Inserting your form and container directly into the body
             document.body.innerHTML = `
-                 <h1>Quote Calculator</h1>
+                 <h1>Quote Breakdown Calculator</h1>
                 <form>
     <label for="cost">Cost:</label>
     <input type="number" id="cost" placeholder="Enter total cost"><br>
@@ -145,7 +145,9 @@
                         <p>Labour: <span id="labourResult">0.00%</span></p>
                         <p>GST: <span id="gstResult">0.00%</span></p>
                         <p>Admin: <span id="adminResult">0.00%</span></p>
+                        <p>Includes: Documentation, form 4's, compliance, invoices/receipts etc...</p>
                         <p>Running: <span id="runningResult">0.00%</span></p>
+                        <p>Includes: Insurance, Licencing, Fuel costs, Warranites etc...</p>
                     </div>
                     <div class="right-column">
                         <img class="image" src="Logo.png" alt="Image">
