@@ -171,10 +171,10 @@ function calculateBreakdown() {
         const remainingPercentage = 100 - materialPercentage - 10;
 
         // Proportionally distribute remaining percentages
-        labourPercentage = remainingPercentage * 0.3;
+        labourPercentage = remainingPercentage * 3/7;
         gstPercentage = 10;
-        adminPercentage = remainingPercentage * 0.2;
-        runningPercentage = remainingPercentage * 0.2;
+        adminPercentage = remainingPercentage * 2/7;
+        runningPercentage = remainingPercentage * 2/7;
     } else {
         // Default percentages when no materials are entered
         materialPercentage = 20;
