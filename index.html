@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Price Breakdown Calculator</title>
+    <title>Quote Calculator</title>
     <style>
 /* CSS styles for the Quote Calculator */
 
@@ -9,7 +9,7 @@
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
-        background-color: #463a80;
+        background-color: #ffe100;
     }
         
     .container {
@@ -22,7 +22,7 @@
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     text-align: center;
     margin: 20px auto; /* Center the container horizontally */
-    max-width: 800px; /* Set a maximum width */
+    max-width: 400px; /* Set a maximum width */
 }
 
     .left-column, .right-column {
@@ -33,11 +33,11 @@
     h1 {
         text-align: center;
         margin-top: 20px;
-        color: #ffffff;
+        color: #ec008c;
     }
     
     form {
-        max-width: 800px;
+        max-width: 400px;
         margin: 0 auto;
         background-color: #fff;
         padding: 20px;
@@ -81,7 +81,7 @@
     h2 {
         text-align: center;
         margin-top: 20px;
-        color: #00890d;
+        color: #ec008c;
     }
     
     p {
@@ -92,7 +92,7 @@
     
     span {
         font-weight: bold;
-        color: #00890d;
+        color: #ec008c;
     }
     .results-box {
         max-width: 400px;
@@ -114,7 +114,7 @@
         
     .quote-variation {
         font-weight: bold;
-        color: #00890d; 
+        color: #ec008c; 
     }
 
     </style>
@@ -128,86 +128,116 @@
         if (enteredPassword === correctPassword) {
             // Inserting your form and container directly into the body
             document.body.innerHTML = `
-                 <h1>Price Breakdown Calculator</h1>
+                <h1>Quote Calculator</h1>
                 <form>
-    <label for="cost">Cost:</label>
-    <input type="number" id="cost" placeholder="Enter total cost"><br>
+                    <label for="techHours">Plumber/Roofer Hours:</label>
+                    <input type="number" id="techHours"><br>
 
-    <label for="materials">Materials:</label>
-    <input type="number" id="materials" placeholder="Enter material cost"><br>
-</form>
+                    <label for="apprenticeHours">Apprentice Hours:</label>
+                    <input type="number" id="apprenticeHours"><br>
 
+                    <label for="subbieCost">Subbie Cost:</label>
+                    <input type="number" id="subbieCost"><br>
 
+                    <label for="materialCost">Material Cost:</label>
+                    <input type="number" id="materialCost"><br>
+
+                    <label for="otherCost">Other Cost:</label>
+                    <input type="number" id="otherCost"><br>
+                    
+                    <label for="quoteTotal">Quote Total:</label>
+                    <input type="number" id="quoteTotal"><br>    
+
+                    <label for="friendFamily">Friend and Family:</label>
+                    <input type="checkbox" id="friendFamily"><br>
+                </form>
+                
                 <div class="container">
                     <div class="left-column">
-                        <h2>Breakdown:</h2>
-                        <p>Materials: <span id="materialResult">0.00%</span></p>
-                        <p>Labour: <span id="labourResult">0.00%</span></p>
-                        <p>GST: <span id="gstResult">0.00%</span></p>
-                        <p>Admin: <span id="adminResult">0.00%</span></p>
-                        <p>Includes: Documentation, form 4's, compliance, invoices/receipts etc...</p>
-                        <p>Running: <span id="runningResult">0.00%</span></p>
-                        <p>Includes: Insurance, Licencing, Fuel costs, Warranties etc...</p>
+                        <h2>Results:</h2>
+                        <p id="gpMessage"></p>
                     </div>
                     <div class="right-column">
                         <img class="image" src="Logo.png" alt="Image">
                     </div>
                 </div>
-        `;
+            `;
+            //                        <p>GP %: <span id="gpPercentage">0.00</span>%</p>
         } else {
             document.body.innerHTML = "<p>Access denied. Incorrect password.</p>";
         }
     </script>
 
-<script>
-function calculateBreakdown() {
-    const cost = parseFloat(document.getElementById('cost').value) || 0;
-    const materials = parseFloat(document.getElementById('materials').value) || 0;
+    <script>
+        // Function to calculate the results
+ function calculate() {
+            // Get values from input fields and convert empty/null values to 0
+            const quoteTotal = parseFloat(document.getElementById('quoteTotal').value) || 0;
+            const techHours = parseFloat(document.getElementById('techHours').value) || 0;
+            const appHours = parseFloat(document.getElementById('apprenticeHours').value) || 0;
+            const subbieCost = parseFloat(document.getElementById('subbieCost').value) || 0;
+            const materialCost = parseFloat(document.getElementById('materialCost').value) || 0;
+            const otherCost = parseFloat(document.getElementById('otherCost').value) || 0;
+    
+            // Calculate Technician Cost, Apprentice Cost, and GP Percentage
+            const techCost = techHours * 214.5;
+            const appCost = appHours * 150;
 
-    let materialPercentage, labourPercentage, gstPercentage, adminPercentage, runningPercentage;
+            let adjustedMaterialCost = materialCost;
+            if (materialCost > 1000) {
+                adjustedMaterialCost = materialCost * 0.39;
+            } else if (materialCost > 500) {
+                adjustedMaterialCost = materialCost * 0.486;
+            } else if (materialCost > 250) {
+                adjustedMaterialCost = materialCost * 0.54;
+            } else if (materialCost > 100) {
+                adjustedMaterialCost = materialCost * 0.9;
+            } else if (materialCost > 30) {
+                adjustedMaterialCost = materialCost * 1.05;
+            } else {
+                adjustedMaterialCost = materialCost * 1.2;
+            }
 
-    if (materials > 0) {
-        materialPercentage = (materials / cost) * 100;
-        const remainingPercentage = 100 - materialPercentage - 10;
+            let adjustedSubbieCost = subbieCost;
+            if (subbieCost > 1000) {
+                adjustedSubbieCost = subbieCost * 0.39;
+            } else if (subbieCost > 500) {
+                adjustedSubbieCost = subbieCost * 0.486;
+            } else if (subbieCost > 250) {
+                adjustedSubbieCost = subbieCost * 0.54;
+            } else if (subbieCost > 100) {
+                adjustedSubbieCost = subbieCost * 0.9;
+            } else if (subbieCost > 30) {
+                adjustedSubbieCost = subbieCost * 1.05;
+            } else {
+                adjustedSubbieCost = subbieCost * 1.2;
+            }
 
-        // Proportionally distribute remaining percentages
-        labourPercentage = remainingPercentage * 3/7;
-        gstPercentage = 10;
-        adminPercentage = remainingPercentage * 2/7;
-        runningPercentage = remainingPercentage * 2/7;
-    } else {
-        // Default percentages when no materials are entered
-        materialPercentage = 20;
-        labourPercentage = 30;
-        gstPercentage = 10;
-        adminPercentage = 20;
-        runningPercentage = 20;
-    }
+            const TotalCost = techCost + appCost + adjustedSubbieCost + adjustedMaterialCost + otherCost;
+            const gpPercentage = ((quoteTotal - TotalCost) / quoteTotal) * 100;
+            const quoteVariation = (TotalCost / 0.28);
+     
+            // Update the result elements
+            //document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
+            const gpMessage = document.getElementById('gpMessage');
+            if (gpPercentage < 72) {
+                gpMessage.innerHTML = 'Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span> to be priced correctly.';
+            } else {
+                gpMessage.innerHTML = 'Quoted price correctly'; // Clear the message if GP % is 65% or higher
+            }
+        }
+    
 
-    // Calculate the actual values
-    const materialValue = (materialPercentage / 100) * cost;
-    const labourValue = (labourPercentage / 100) * cost;
-    const gstValue = (gstPercentage / 100) * cost;
-    const adminValue = (adminPercentage / 100) * cost;
-    const runningValue = (runningPercentage / 100) * cost;
+        // Only set up the event listeners if the password was correct
+        if (document.getElementById('techHours')) {
+            const inputFields = document.querySelectorAll('input');
+            inputFields.forEach((input) => {
+                input.addEventListener('input', calculate);
+            });
 
-    // Format values with commas
-    const formatValue = (value) => value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-    // Update the result elements to display percentage and actual values
-    document.getElementById('materialResult').textContent = materialPercentage.toFixed(2) + '% ($' + formatValue(materialValue) + ')';
-    document.getElementById('labourResult').textContent = labourPercentage.toFixed(2) + '% ($' + formatValue(labourValue) + ')';
-    document.getElementById('gstResult').textContent = gstPercentage.toFixed(2) + '% ($' + formatValue(gstValue) + ')';
-    document.getElementById('adminResult').textContent = adminPercentage.toFixed(2) + '% ($' + formatValue(adminValue) + ')';
-    document.getElementById('runningResult').textContent = runningPercentage.toFixed(2) + '% ($' + formatValue(runningValue) + ')';
-}
-
-// Add event listeners to inputs
-document.querySelectorAll('input').forEach(input => {
-    input.addEventListener('input', calculateBreakdown);
-});
-
-</script>
-
+            // Initial calculation
+            calculate();
+        }
+    </script>
 </body>
 </html>
