@@ -219,10 +219,10 @@ document.body.innerHTML = `
             const TotalCost = techCost + appCost + adjustedSubbieCost + adjustedMaterialCost + otherCost;
             const gpPercentage = ((quoteTotal - TotalCost) / quoteTotal) * 100;
             const quoteVariation = (TotalCost / 0.28);
-
+            quoteVariationF = quoteVariation
             // Apply Friends & Family discount (reduce required price by 10%)
             if (isFriendFamily) {
-                quoteVariationF = quoteVariation * 0.9; // Reduce by 10%
+                quoteVariationF *= 0.9; // Reduce by 10%
             }
      
             // Update the result elements
