@@ -178,6 +178,8 @@
             const subbieCost = parseFloat(document.getElementById('subbieCost').value) || 0;
             const materialCost = parseFloat(document.getElementById('materialCost').value) || 0;
             const otherCost = parseFloat(document.getElementById('otherCost').value) || 0;
+            const isFriendFamily = document.getElementById('friendFamily').checked; // Check if Friends & Family is selected
+
     
             // Calculate Technician Cost, Apprentice Cost, and GP Percentage
             const techCost = techHours * 214.5;
@@ -216,6 +218,11 @@
             const TotalCost = techCost + appCost + adjustedSubbieCost + adjustedMaterialCost + otherCost;
             const gpPercentage = ((quoteTotal - TotalCost) / quoteTotal) * 100;
             const quoteVariation = (TotalCost / 0.28);
+
+            // Apply Friends & Family discount (reduce required price by 10%)
+            if (isFriendFamily) {
+                quoteVariation *= 0.9; // Reduce by 10%
+            }
      
             // Update the result elements
             //document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
@@ -223,7 +230,7 @@
             if (gpPercentage < 72) {
                 gpMessage.innerHTML = 'Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span> to be priced correctly.';
             } else {
-                gpMessage.innerHTML = 'Quoted price correctly'; // Clear the message if GP % is 65% or higher
+                gpMessage.innerHTML = 'Quoted price correctly'; // Clear the message if GP % is priced correctly
             }
         }
     
