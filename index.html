@@ -127,41 +127,42 @@
 
         if (enteredPassword === correctPassword) {
             // Inserting your form and container directly into the body
-            document.body.innerHTML = `
-                <h1>Quote Calculator</h1>
-                <form>
-                    <label for="techHours">Plumber/Roofer Hours:</label>
-                    <input type="number" id="techHours"><br>
+document.body.innerHTML = `
+    <h1>Quote Calculator</h1>
+    <form>
+        <label for="techHours">Plumber/Roofer Hours:</label>
+        <input type="number" id="techHours"><br>
 
-                    <label for="apprenticeHours">Apprentice Hours:</label>
-                    <input type="number" id="apprenticeHours"><br>
+        <label for="apprenticeHours">Apprentice Hours:</label>
+        <input type="number" id="apprenticeHours"><br>
 
-                    <label for="subbieCost">Subbie Cost:</label>
-                    <input type="number" id="subbieCost"><br>
+        <label for="subbieCost">Subbie Cost:</label>
+        <input type="number" id="subbieCost"><br>
 
-                    <label for="materialCost">Material Cost:</label>
-                    <input type="number" id="materialCost"><br>
+        <label for="materialCost">Material Cost:</label>
+        <input type="number" id="materialCost"><br>
 
-                    <label for="otherCost">Other Cost:</label>
-                    <input type="number" id="otherCost"><br>
-                    
-                    <label for="quoteTotal">Quote Total:</label>
-                    <input type="number" id="quoteTotal"><br>    
+        <label for="otherCost">Other Cost:</label>
+        <input type="number" id="otherCost"><br>
+        
+        <label for="quoteTotal">Quote Total:</label>
+        <input type="number" id="quoteTotal"><br>    
 
-                    <label for="friendFamily">Friend and Family:</label>
-                    <input type="checkbox" id="friendFamily"><br>
-                </form>
-                
-                <div class="container">
-                    <div class="left-column">
-                        <h2>Results:</h2>
-                        <p id="gpMessage"></p>
-                    </div>
-                    <div class="right-column">
-                        <img class="image" src="Logo.png" alt="Image">
-                    </div>
-                </div>
-            `;
+        <label for="friendFamily">Friend and Family:</label>
+        <input type="checkbox" id="friendFamily"><br>
+    </form>
+    
+    <div class="container">
+        <div class="left-column">
+            <h2>Results:</h2>
+            <p id="gpMessage"></p>
+        </div>
+        <div class="right-column">
+            <img class="image" src="Logo.png" alt="Image">
+        </div>
+    </div>
+`;
+
             //                        <p>GP %: <span id="gpPercentage">0.00</span>%</p>
         } else {
             document.body.innerHTML = "<p>Access denied. Incorrect password.</p>";
@@ -237,6 +238,7 @@
 
         // Only set up the event listeners if the password was correct
         if (document.getElementById('techHours')) {
+            // Re-select elements after updating the DOM
             const inputFields = document.querySelectorAll('input[type="number"]');
             const friendFamilyCheckbox = document.getElementById('friendFamily');
 
