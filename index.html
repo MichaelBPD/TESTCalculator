@@ -220,17 +220,15 @@ document.body.innerHTML = `
             const gpPercentage = ((quoteTotal - TotalCost) / quoteTotal) * 100;
             const quoteVariation = (TotalCost / 0.28);
             quoteVariationF = quoteVariation
-            GPF = gpPercentage
             // Apply Friends & Family discount (reduce required price by 10%)
             if (isFriendFamily) {
                 quoteVariationF *= 0.9; // Reduce by 10%
-                GPF *= 0.9;
             }
             
             // Update the result elements
             //document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
             const gpMessage = document.getElementById('gpMessage');
-            if (GPF < 72) {
+            if (quoteTotal < quoteVariationF) {
                 gpMessage.innerHTML = 'Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariationF) + '</span> to be priced correctly.';
             } else {
                 gpMessage.innerHTML = 'Quoted price correctly'; // Clear the message if GP % is priced correctly
