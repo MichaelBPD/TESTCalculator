@@ -237,10 +237,18 @@
 
         // Only set up the event listeners if the password was correct
         if (document.getElementById('techHours')) {
-            const inputFields = document.querySelectorAll('input');
+            const inputFields = document.querySelectorAll('input[type="number"]');
+            const friendFamilyCheckbox = document.getElementById('friendFamily');
+
+            // Add event listener for number inputs (updates on input)
             inputFields.forEach((input) => {
                 input.addEventListener('input', calculate);
             });
+
+            // Add event listener for the checkbox (updates on change)
+            if (friendFamilyCheckbox) {
+                friendFamilyCheckbox.addEventListener('change', calculate);
+            }
 
             // Initial calculation
             calculate();
