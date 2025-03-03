@@ -222,14 +222,14 @@ document.body.innerHTML = `
 
             // Apply Friends & Family discount (reduce required price by 10%)
             if (isFriendFamily) {
-                quoteVariation *= 0.9; // Reduce by 10%
+                quoteVariationF = quoteVariation * 0.9; // Reduce by 10%
             }
      
             // Update the result elements
             //document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
             const gpMessage = document.getElementById('gpMessage');
             if (gpPercentage < 72) {
-                gpMessage.innerHTML = 'Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span> to be priced correctly.';
+                gpMessage.innerHTML = 'Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariationF) + '</span> to be priced correctly.';
             } else {
                 gpMessage.innerHTML = 'Quoted price correctly'; // Clear the message if GP % is priced correctly
             }
