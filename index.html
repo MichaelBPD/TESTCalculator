@@ -1,260 +1,404 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Quote Calculator</title>
-    <style>
-/* CSS styles for the Quote Calculator */
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gutter & Gutter Guard Quote Calculator</title>
+  <style>
+    :root{
+      --brand:#ec008c; /* magenta */
+      --accent:#007bff; /* blue */
+      --bg:#ffe100; /* yellow */
+      --card:#fff;
+      --text:#333;
+    }
+    *{box-sizing:border-box}
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;background:var(--bg);color:var(--text)}
+    header{padding:24px 16px;text-align:center}
+    h1{color:var(--brand);margin:0 0 8px}
+    p.sub{margin:0;color:#555}
 
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #ffe100;
-    }
-        
-    .container {
-    display: flex;
-    justify-content: center; /* Center the container horizontally */
-    align-items: center;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 150px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    margin: 20px auto; /* Center the container horizontally */
-    max-width: 400px; /* Set a maximum width */
-}
+    .wrap{max-width:980px;margin:16px auto;padding:16px}
+    .card{background:var(--card);border-radius:20px;box-shadow:0 2px 10px rgba(0,0,0,.1);padding:16px}
 
-    .left-column, .right-column {
-        flex: 1; /* Both columns occupy an equal share of the container */
-        padding: 10px;
-    }
-        
-    h1 {
-        text-align: center;
-        margin-top: 20px;
-        color: #ec008c;
-    }
-    
-    form {
-        max-width: 400px;
-        margin: 0 auto;
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 20px;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    }
-    
-    label {
-        font-weight: bold;
-        display: block;
-        margin-bottom: 5px;
-        color: #555;
-    }
-    
-    input[type="number"] {
-        width: 100%; /* Make the input fields span the full width of the container */
-        padding: 8px;
-        margin-bottom: 15px;
-        border: 1px solid #ccc;
-        border-radius: 3px;
-        font-size: 16px;
-        box-sizing: border-box; /* Include padding and border in the total width */
-    }
-    
-    button {
-        display: block;
-        width: 100%;
-        background-color: #007bff;
-        color: #fff;
-        padding: 10px;
-        border: none;
-        border-radius: 3px;
-        font-size: 16px;
-        cursor: pointer;
-    }
-    
-    button:hover {
-        background-color: #0056b3;
-    }
-    
-    h2 {
-        text-align: center;
-        margin-top: 20px;
-        color: #ec008c;
-    }
-    
-    p {
-        text-align: center;
-        margin-top: 10px;
-        color: #555;
-    }
-    
-    span {
-        font-weight: bold;
-        color: #ec008c;
-    }
-    .results-box {
-        max-width: 400px;
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-        text-align: center;
-        margin-top: 20px;
-    }
+    .grid{display:grid;grid-template-columns:1fr;gap:16px}
+    @media(min-width:900px){.grid{grid-template-columns:1.1fr .9fr}}
 
-    .results-box p {
-        color: #007bff;
-    }
-        
-    .image {
-        max-width: 100%; /* Make sure the image doesn't exceed its container's width */
-    }
-        
-    .quote-variation {
-        font-weight: bold;
-        color: #ec008c; 
-    }
+    fieldset{border:1px solid #eee;border-radius:12px;padding:12px}
+    legend{padding:0 8px;color:#666}
+    label{display:block;font-weight:600;margin:10px 0 6px}
+    input[type="number"], select{width:100%;padding:10px;border:1px solid #ccc;border-radius:8px;font-size:15px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    .muted{color:#666;font-size:12px}
+    .inline{display:flex;align-items:center;gap:8px}
 
-    </style>
+    .summary{ text-align:center }
+    .summary h2{color:var(--brand)}
+    .summary .pill{display:inline-block;background:#f5f5f5;border-radius:999px;padding:6px 12px;margin:4px 6px}
+    .breakdown{width:100%;border-collapse:collapse;margin-top:8px}
+    .breakdown th,.breakdown td{padding:8px;border-bottom:1px solid #eee;text-align:left}
+    .right{text-align:right}
+
+    .cta{background:var(--accent);color:#fff;border:0;border-radius:10px;padding:12px 16px;font-size:16px;cursor:pointer;width:100%}
+    .cta:hover{background:#0056b3}
+    .ok{color:#16a34a;font-weight:700}
+    .warn{color:#b45309;font-weight:700}
+    .bad{color:#dc2626;font-weight:700}
+
+    .footer-note{color:#777;text-align:center;font-size:12px;margin-top:8px}
+    .brandbar{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .brandbar img{max-height:56px}
+  </style>
 </head>
 <body>
-    <script>
-        // Define the correct password
-        const correctPassword = "8008";
-        const enteredPassword = prompt("Please enter the password:");
 
-        if (enteredPassword === correctPassword) {
-            // Inserting your form and container directly into the body
-document.body.innerHTML = `
-    <h1>Quote Calculator</h1>
-    <form>
-        <label for="techHours">Plumber/Roofer Hours:</label>
-        <input type="number" id="techHours"><br>
+<script>
+// ===== SIMPLE ACCESS GATE (optional) =====
+const requirePassword = false; // set to true to enable prompt
+const correctPassword = "8008";
+if(requirePassword){
+  const entered = prompt("Please enter the password:");
+  if(entered !== correctPassword){
+    document.body.innerHTML = "<p style='padding:24px'>Access denied. Incorrect password.</p>";
+  }
+}
+</script>
 
-        <label for="apprenticeHours">Apprentice Hours:</label>
-        <input type="number" id="apprenticeHours"><br>
+<header>
+  <h1>Quote Calculator</h1>
+  <p class="sub">Gutters & Gutter Guards — ballpark pricing based on AU market ranges</p>
+</header>
 
-        <label for="subbieCost">Subbie Cost:</label>
-        <input type="number" id="subbieCost"><br>
-
-        <label for="materialCost">Material Cost:</label>
-        <input type="number" id="materialCost"><br>
-
-        <label for="otherCost">Other Cost:</label>
-        <input type="number" id="otherCost"><br>
-        
-        <label for="quoteTotal">Quote Total:</label>
-        <input type="number" id="quoteTotal"><br>    
-
-        <label for="friendFamily">Friends and Family:</label>
-        <input type="checkbox" id="friendFamily"><br>
-    </form>
-    
-    <div class="container">
-        <div class="left-column">
-            <h2>Results:</h2>
-            <p id="gpMessage"></p>
+<div class="wrap">
+  <div class="grid">
+    <!-- ================= LEFT: FORM ================= -->
+    <div class="card">
+      <div class="brandbar">
+        <h3 style="margin:0;color:#222">Job Inputs</h3>
+        <img src="Logo.png" alt="Logo" />
+      </div>
+      
+      <fieldset>
+        <legend>Measurements</legend>
+        <div class="row">
+          <div>
+            <label for="lengthM">Total gutter length (m)</label>
+            <input type="number" id="lengthM" min="0" step="0.1" value="40" />
+          </div>
+          <div>
+            <label for="downpipes">Downpipes (qty)</label>
+            <input type="number" id="downpipes" min="0" step="1" value="4" />
+          </div>
         </div>
-        <div class="right-column">
-            <img class="image" src="Logo.png" alt="Image">
+      </fieldset>
+
+      <fieldset>
+        <legend>Materials</legend>
+        <div class="row">
+          <div>
+            <label for="gutterType">Gutter type</label>
+            <select id="gutterType">
+              <option value="colorbond">Standard Colorbond / Zincalume</option>
+              <option value="premium">Premium finish / Copper</option>
+              <option value="box">Box gutter (custom)</option>
+              <option value="none">None (guards only)</option>
+            </select>
+          </div>
+          <div>
+            <label for="guardType">Gutter guard</label>
+            <select id="guardType">
+              <option value="none">None</option>
+              <option value="plastic">Plastic mesh (basic)</option>
+              <option value="aluminium">Aluminium mesh (standard)</option>
+              <option value="steel">Steel / ember-rated mesh</option>
+              <option value="foam">Foam inserts</option>
+            </select>
+          </div>
         </div>
+        <div class="row">
+          <div>
+            <label for="downpipeType">Downpipe type</label>
+            <select id="downpipeType">
+              <option value="standard">Standard Colorbond / Zincalume</option>
+              <option value="premium">Premium colours / materials</option>
+            </select>
+          </div>
+          <div>
+            <label for="colourUpcharge">Premium colour upcharge ($ flat)</label>
+            <input type="number" id="colourUpcharge" min="0" step="1" value="0" />
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Access & Site</legend>
+        <div class="row">
+          <div>
+            <label for="storeys">Storeys</label>
+            <select id="storeys">
+              <option value="single">Single</option>
+              <option value="double">Double</option>
+            </select>
+          </div>
+          <div>
+            <label for="pitch">Roof pitch</label>
+            <select id="pitch">
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="steep">Steep</option>
+            </select>
+          </div>
+        </div>
+        <div class="row-3">
+          <div class="inline">
+            <input type="checkbox" id="needRemoval" checked />
+            <label for="needRemoval">Remove & dispose old gutters/guards</label>
+          </div>
+          <div class="inline">
+            <input type="checkbox" id="needCleaning" />
+            <label for="needCleaning">Clean gutters before guard install</label>
+          </div>
+          <div class="inline">
+            <input type="checkbox" id="scaffolding" />
+            <label for="scaffolding">Scaffolding</label>
+          </div>
+        </div>
+        <div class="row-3">
+          <div class="inline">
+            <input type="checkbox" id="boom" />
+            <label for="boom">Boom lift (1 day)</label>
+          </div>
+          <div class="inline">
+            <input type="checkbox" id="travel" />
+            <label for="travel">Travel surcharge</label>
+          </div>
+          <div class="inline">
+            <input type="checkbox" id="urgent" />
+            <label for="urgent">Urgent / after-hours</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Business Settings</legend>
+        <div class="row">
+          <div>
+            <label for="targetMargin">Target gross margin (%)</label>
+            <input type="number" id="targetMargin" min="0" max="95" step="1" value="30" />
+            <div class="muted">Used to suggest a quote range above estimated cost.</div>
+          </div>
+          <div>
+            <label for="includeGST" class="inline">
+              <input type="checkbox" id="includeGST" /> Include 10% GST in totals
+            </label>
+          </div>
+        </div>
+      </fieldset>
+
+      <button class="cta" id="calcBtn" type="button">Calculate</button>
+      <div class="footer-note">Prices are indicative. Adjust the config at top of script to match your supplier and labour rates.</div>
     </div>
-`;
 
-            //                        <p>GP %: <span id="gpPercentage">0.00</span>%</p>
-        } else {
-            document.body.innerHTML = "<p>Access denied. Incorrect password.</p>";
-        }
-    </script>
+    <!-- ================= RIGHT: RESULTS ================= -->
+    <div class="card summary">
+      <h2>Estimate</h2>
+      <div id="estSummary"></div>
+      <table class="breakdown" id="breakdownTbl" aria-label="Cost breakdown"></table>
+      <div id="marginMsg" style="margin-top:8px"></div>
+    </div>
+  </div>
+</div>
 
-    <script>
-        // Function to calculate the results
- function calculate() {
-            // Get values from input fields and convert empty/null values to 0
-            const quoteTotal = parseFloat(document.getElementById('quoteTotal').value) || 0;
-            const techHours = parseFloat(document.getElementById('techHours').value) || 0;
-            const appHours = parseFloat(document.getElementById('apprenticeHours').value) || 0;
-            const subbieCost = parseFloat(document.getElementById('subbieCost').value) || 0;
-            const materialCost = parseFloat(document.getElementById('materialCost').value) || 0;
-            const otherCost = parseFloat(document.getElementById('otherCost').value) || 0;
-            const isFriendFamily = document.getElementById('friendFamily').checked; // Check if Friends & Family is selected
+<script>
+/****************************************************
+ * CONFIG: tune these to your business.
+ ****************************************************/
+const RATES = {
+  gutterPerM: {               // Installed rates
+    colorbond: 45,            // $/m
+    premium: 110,             // $/m
+    box: 140,                 // $/m
+    none: 0
+  },
+  guardPerM: {
+    none: 0,
+    plastic: 25,
+    aluminium: 50,
+    steel: 75,
+    foam: 35
+  },
+  downpipeEach: {
+    standard: 120,
+    premium: 200
+  },
+  removalPerM: 7,             // remove & dispose old gutters/guards
+  cleaningPerM: 6,            // cleaning before guard install
+  accessMultiplier: {         // storey labour impact
+    single: 1.0,
+    double: 1.25              // +25%
+  },
+  pitchExtraPerM: {           // per-metre adder for tricky access
+    low: 0,
+    medium: 10,
+    steep: 20
+  },
+  scaffoldingFlat: 1500,
+  boomPerDay: 300,
+  travelFlat: 100,
+  urgentMultiplier: 1.25      // +25% labour/material handling
+};
 
-    
-            // Calculate Technician Cost, Apprentice Cost, and GP Percentage
-            const techCost = techHours * 214.5;
-            const appCost = appHours * 150;
+function money(n){return n.toLocaleString('en-AU',{style:'currency',currency:'AUD'})}
 
-            let adjustedMaterialCost = materialCost;
-            if (materialCost > 1000) {
-                adjustedMaterialCost = materialCost * 0.39;
-            } else if (materialCost > 500) {
-                adjustedMaterialCost = materialCost * 0.486;
-            } else if (materialCost > 250) {
-                adjustedMaterialCost = materialCost * 0.54;
-            } else if (materialCost > 100) {
-                adjustedMaterialCost = materialCost * 0.9;
-            } else if (materialCost > 30) {
-                adjustedMaterialCost = materialCost * 1.05;
-            } else {
-                adjustedMaterialCost = materialCost * 1.2;
-            }
+function calcEstimate(){
+  const lengthM = +document.getElementById('lengthM').value || 0;
+  const downpipes = +document.getElementById('downpipes').value || 0;
+  const gutterType = document.getElementById('gutterType').value;
+  const guardType = document.getElementById('guardType').value;
+  const downpipeType = document.getElementById('downpipeType').value;
+  const colourUpcharge = +document.getElementById('colourUpcharge').value || 0;
+  const storeys = document.getElementById('storeys').value;
+  const pitch = document.getElementById('pitch').value;
+  const needRemoval = document.getElementById('needRemoval').checked;
+  const needCleaning = document.getElementById('needCleaning').checked;
+  const scaffolding = document.getElementById('scaffolding').checked;
+  const boom = document.getElementById('boom').checked;
+  const travel = document.getElementById('travel').checked;
+  const urgent = document.getElementById('urgent').checked;
+  const targetMarginPct = +document.getElementById('targetMargin').value || 0; // as % of sell price
+  const includeGST = document.getElementById('includeGST').checked;
 
-            let adjustedSubbieCost = subbieCost;
-            if (subbieCost > 1000) {
-                adjustedSubbieCost = subbieCost * 0.39;
-            } else if (subbieCost > 500) {
-                adjustedSubbieCost = subbieCost * 0.486;
-            } else if (subbieCost > 250) {
-                adjustedSubbieCost = subbieCost * 0.54;
-            } else if (subbieCost > 100) {
-                adjustedSubbieCost = subbieCost * 0.9;
-            } else if (subbieCost > 30) {
-                adjustedSubbieCost = subbieCost * 1.05;
-            } else {
-                adjustedSubbieCost = subbieCost * 1.2;
-            }
+  // Base per-m costs
+  const gutterCost = RATES.gutterPerM[gutterType] * lengthM;
+  const guardCost = RATES.guardPerM[guardType] * lengthM;
+  const downpipeCost = RATES.downpipeEach[downpipeType] * downpipes;
 
-            const TotalCost = techCost + appCost + adjustedSubbieCost + adjustedMaterialCost + otherCost;
-            const gpPercentage = ((quoteTotal - TotalCost) / quoteTotal) * 100;
-            const quoteVariation = (TotalCost / 0.28);
-            quoteVariationF = quoteVariation
-            // Apply Friends & Family discount (reduce required price by 10%)
-            if (isFriendFamily) {
-                quoteVariationF *= 0.9; // Reduce by 10%
-            }
-            
-            // Update the result elements
-            //document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
-            const gpMessage = document.getElementById('gpMessage');
-            if (quoteTotal < quoteVariationF) {
-                gpMessage.innerHTML = 'Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariationF) + '</span> to be priced correctly.';
-            } else {
-                gpMessage.innerHTML = 'Quoted price correctly'; // Clear the message if GP % is priced correctly
-            }
-        }
-    
+  // Access multipliers / extras
+  const accessMult = RATES.accessMultiplier[storeys] || 1;
+  const pitchAdder = RATES.pitchExtraPerM[pitch] * lengthM; // flat adder based on pitch
 
-        // Only set up the event listeners if the password was correct
-        if (document.getElementById('techHours')) {
-            // Re-select elements after updating the DOM
-            const inputFields = document.querySelectorAll('input[type="number"]');
-            const friendFamilyCheckbox = document.getElementById('friendFamily');
+  let subtotal = 0;
+  const lines = [];
 
-            // Add event listener for number inputs (updates on input)
-            inputFields.forEach((input) => {
-                input.addEventListener('input', calculate);
-            });
+  if(gutterCost>0){
+    const adj = gutterCost * accessMult + pitchAdder; // pitch adder applied once per line item set
+    lines.push({label:`Gutters (${gutterType})`, qty:`${lengthM.toFixed(1)} m`, cost: adj});
+    subtotal += adj;
+  }
 
-            // Add event listener for the checkbox (updates on change)
-            if (friendFamilyCheckbox) {
-                friendFamilyCheckbox.addEventListener('change', calculate);
-            }
+  if(guardCost>0){
+    const adj = guardCost * accessMult; // guards usually follow gutter access difficulty
+    lines.push({label:`Gutter guards (${guardType})`, qty:`${lengthM.toFixed(1)} m`, cost: adj});
+    subtotal += adj;
+  }
 
-            // Initial calculation
-            calculate();
-        }
-    </script>
+  if(downpipeCost>0){
+    const adj = downpipeCost * accessMult;
+    lines.push({label:`Downpipes (${downpipeType})`, qty:`${downpipes} ea`, cost: adj});
+    subtotal += adj;
+  }
+
+  if(needRemoval){
+    const cost = RATES.removalPerM * lengthM;
+    lines.push({label:`Removal & disposal`, qty:`${lengthM.toFixed(1)} m`, cost});
+    subtotal += cost;
+  }
+
+  if(needCleaning && guardType!=="none"){
+    const cost = RATES.cleaningPerM * lengthM;
+    lines.push({label:`Gutter cleaning (pre-guard)`, qty:`${lengthM.toFixed(1)} m`, cost});
+    subtotal += cost;
+  }
+
+  if(scaffolding){
+    lines.push({label:`Scaffolding (flat)`, qty:`1`, cost:RATES.scaffoldingFlat});
+    subtotal += RATES.scaffoldingFlat;
+  }
+
+  if(boom){
+    lines.push({label:`Boom lift (1 day)`, qty:`1`, cost:RATES.boomPerDay});
+    subtotal += RATES.boomPerDay;
+  }
+
+  if(travel){
+    lines.push({label:`Travel surcharge`, qty:`1`, cost:RATES.travelFlat});
+    subtotal += RATES.travelFlat;
+  }
+
+  if(colourUpcharge>0){
+    lines.push({label:`Premium colour upcharge`, qty:`1`, cost:colourUpcharge});
+    subtotal += colourUpcharge;
+  }
+
+  // Urgency multiplier applies to subtotal (represents labour + handling uplift)
+  let total = urgent ? subtotal * RATES.urgentMultiplier : subtotal;
+
+  // Optional GST
+  const gst = includeGST ? total * 0.10 : 0;
+  const totalIncGST = total + gst;
+
+  // Suggest a quote range based on target margin (sell price vs cost)
+  // If targetMarginPct is margin on sell price (e.g., 30%), sell = cost / (1 - 0.30)
+  const targetSell = targetMarginPct>0 ? total / (1 - targetMarginPct/100) : total;
+  const low = targetSell * 0.95; // give a range buffer
+  const high = targetSell * 1.10;
+
+  // Render summary
+  const estSummary = document.getElementById('estSummary');
+  const sellStr = includeGST ? `${money(targetSell+gst)} inc GST` : `${money(targetSell)} ex GST`;
+  const lowStr  = includeGST ? `${money(low+gst)} inc GST` : `${money(low)} ex GST`;
+  const highStr = includeGST ? `${money(high+gst)} inc GST` : `${money(high)} ex GST`;
+
+  estSummary.innerHTML = `
+    <div class="pill">Estimated cost: <strong>${includeGST? money(totalIncGST)+" inc GST" : money(total)+" ex GST"}</strong></div>
+    <div class="pill">Target sell (~${targetMarginPct}% margin): <strong>${sellStr}</strong></div>
+    <div class="pill">Quote range: <strong>${lowStr}</strong> – <strong>${highStr}</strong></div>
+  `;
+
+  // Build breakdown table
+  const tbl = document.getElementById('breakdownTbl');
+  tbl.innerHTML = `<thead><tr><th>Item</th><th>Qty</th><th class="right">Cost</th></tr></thead>`;
+  const tb = document.createElement('tbody');
+  lines.forEach(l=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${l.label}</td><td>${l.qty}</td><td class="right">${money(l.cost)}</td>`;
+    tb.appendChild(tr);
+  });
+  const trSub = document.createElement('tr');
+  trSub.innerHTML = `<td><strong>Subtotal</strong></td><td></td><td class="right"><strong>${money(subtotal)}</strong></td>`;
+  tb.appendChild(trSub);
+  if(urgent){
+    const trUrg = document.createElement('tr');
+    trUrg.innerHTML = `<td>Urgency uplift (x${RATES.urgentMultiplier.toFixed(2)})</td><td></td><td class="right">${money(total - subtotal)}</td>`;
+    tb.appendChild(trUrg);
+  }
+  if(includeGST){
+    const trGST = document.createElement('tr');
+    trGST.innerHTML = `<td>GST (10%)</td><td></td><td class="right">${money(gst)}</td>`;
+    tb.appendChild(trGST);
+  }
+  const trTot = document.createElement('tr');
+  trTot.innerHTML = `<td><strong>Total ${includeGST? 'inc' : 'ex'} GST</strong></td><td></td><td class="right"><strong>${includeGST? money(totalIncGST): money(total)}</strong></td>`;
+  tb.appendChild(trTot);
+  tbl.appendChild(tb);
+
+  // Margin guidance vs your target
+  const marginOnSell = targetSell>0 ? (1 - total/targetSell) * 100 : 0;
+  const marginMsg = document.getElementById('marginMsg');
+  let cls = 'ok';
+  if(marginOnSell < targetMarginPct - 2) cls = 'bad';
+  else if(marginOnSell < targetMarginPct) cls = 'warn';
+  marginMsg.innerHTML = `<div>Achieved margin at target sell: <span class="${cls}">${marginOnSell.toFixed(1)}%</span></div>`;
+}
+
+document.getElementById('calcBtn').addEventListener('click', calcEstimate);
+// also live-calc on input changes
+Array.from(document.querySelectorAll('input,select')).forEach(el=>el.addEventListener('input', calcEstimate));
+
+// Initial render
+calcEstimate();
+</script>
+
 </body>
 </html>
