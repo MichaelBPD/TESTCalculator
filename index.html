@@ -49,6 +49,9 @@
     .footer-note{color:#777;text-align:center;font-size:12px;margin-top:8px}
     .brandbar{display:flex;justify-content:space-between;align-items:center;gap:12px}
     .brandbar img{max-height:56px}
+
+    .tests{margin-top:16px;text-align:left;display:none}
+    .tests pre{background:#0b1021;color:#e2e8f0;padding:12px;border-radius:8px;overflow:auto;max-height:260px}
   </style>
 </head>
 <body>
@@ -67,7 +70,7 @@ if(requirePassword){
 
 <header>
   <h1>Quote Calculator</h1>
-  <p class="sub">Gutters & Gutter Guards — ballpark pricing based on AU market ranges</p>
+  <p class="sub">Gutters & Gutter Guards — labour-hours model with fixed productivities</p>
 </header>
 
 <div class="wrap">
@@ -78,7 +81,7 @@ if(requirePassword){
         <h3 style="margin:0;color:#222">Job Inputs</h3>
         <img src="Logo.png" alt="Logo" />
       </div>
-      
+
       <fieldset>
         <legend>Measurements</legend>
         <div class="row">
@@ -88,7 +91,7 @@ if(requirePassword){
           </div>
           <div>
             <label for="downpipes">Downpipes (qty)</label>
-            <input type="number" id="downpipes" min="0" step="1" value="4" />
+            <input type="number" id="downpipes" min="0" step="1" value="0" />
           </div>
         </div>
       </fieldset>
@@ -161,7 +164,7 @@ if(requirePassword){
           </div>
           <div class="inline">
             <input type="checkbox" id="scaffolding" />
-            <label for="scaffolding">Scaffolding</label>
+            <label for="scaffolding">Scaffolding (per 10m)</label>
           </div>
         </div>
         <div class="row-3">
@@ -178,25 +181,54 @@ if(requirePassword){
             <label for="urgent">Urgent / after-hours</label>
           </div>
         </div>
+        <div class="row-3">
+          <div class="inline">
+            <input type="checkbox" id="tiledRoof" />
+            <label for="tiledRoof">Tiled roof (x1.25)</label>
+          </div>
+          <div class="inline">
+            <input type="checkbox" id="skipBin" />
+            <label for="skipBin">Skip bin (per 10m)</label>
+          </div>
+        </div>
       </fieldset>
 
       <fieldset>
         <legend>Business Settings</legend>
         <div class="row">
           <div>
+            <label for="crewCount">Crew size</label>
+            <select id="crewCount">
+              <option value="1">1 person</option>
+              <option value="2" selected>2 people</option>
+              <option value="3">3 people</option>
+            </select>
+            <div class="muted">Labour cost scales with crew-hours.</div>
+          </div>
+          <div>
+            <label for="allowLongDay" class="inline">
+              <input type="checkbox" id="allowLongDay" /> Allow single long day (≤10h per person)
+            </label>
+            <div class="muted">If ON and crew-hours ≤ (10 × crew), we plan it as 1 day.</div>
+          </div>
+        </div>
+        <div class="row">
+          <div style="display:none">
             <label for="targetMargin">Target gross margin (%)</label>
-            <input type="number" id="targetMargin" min="0" max="95" step="1" value="30" />
-            <div class="muted">Used to suggest a quote range above estimated cost.</div>
+            <input type="number" id="targetMargin" min="0" max="95" step="1" value="70" disabled />
+            <div class="muted">Fixed at 70% for quoting.</div>
           </div>
           <div>
             <label for="includeGST" class="inline">
-              <input type="checkbox" id="includeGST" /> Include 10% GST in totals
+              <input type="checkbox" id="includeGST" checked /> Include 10% GST in totals
             </label>
           </div>
         </div>
       </fieldset>
 
-      <button class="cta" id="calcBtn" type="button">Calculate</button>
+      <div class="row">
+        <button class="cta" id="calcBtn" type="button">Calculate</button>
+      </div>
       <div class="footer-note">Prices are indicative. Adjust the config at top of script to match your supplier and labour rates.</div>
     </div>
 
@@ -206,6 +238,13 @@ if(requirePassword){
       <div id="estSummary"></div>
       <table class="breakdown" id="breakdownTbl" aria-label="Cost breakdown"></table>
       <div id="marginMsg" style="margin-top:8px"></div>
+      <h3 style="margin-top:16px;color:#222">Category totals</h3>
+      <table class="breakdown" id="categoryTbl" aria-label="Category breakdown"></table>
+
+      <div class="tests" id="tests">
+        <h3 style="color:#222;margin-top:16px">Self-tests</h3>
+        <pre id="testOutput"></pre>
+      </div>
     </div>
   </div>
 </div>
@@ -215,41 +254,42 @@ if(requirePassword){
  * CONFIG: tune these to your business.
  ****************************************************/
 const RATES = {
-  gutterPerM: {               // Installed rates
-    colorbond: 45,            // $/m
-    premium: 110,             // $/m
-    box: 140,                 // $/m
-    none: 0
-  },
-  guardPerM: {
-    none: 0,
-    plastic: 25,
-    aluminium: 50,
-    steel: 75,
-    foam: 35
-  },
-  downpipeEach: {
-    standard: 120,
-    premium: 200
-  },
-  removalPerM: 7,             // remove & dispose old gutters/guards
-  cleaningPerM: 6,            // cleaning before guard install
-  accessMultiplier: {         // storey labour impact
-    single: 1.0,
-    double: 1.25              // +25%
-  },
-  pitchExtraPerM: {           // per-metre adder for tricky access
-    low: 0,
-    medium: 10,
-    steep: 20
-  },
-  scaffoldingFlat: 1500,
+  // Site & multiplier settings, and hire/equipment rates
+  accessMultiplier: { single: 1.0, double: 1.25 },
+  tiledRoofMultiplier: 1.25,
+  urgentMultiplier: 1.25,
+  scaffoldingPer10m: 300,
+  skipBinPer10m: 80,
   boomPerDay: 300,
-  travelFlat: 100,
-  urgentMultiplier: 1.25      // +25% labour/material handling
+  travelFlat: 100
 };
 
-function money(n){return n.toLocaleString('en-AU',{style:'currency',currency:'AUD'})}
+// Productivity assumptions (hours)
+const PRODUCTIVITY = {
+  setupBaseHours: 1.0,           // fixed setup + clean-up
+  setupPer10mHours: 0.25,        // extra every 10m of run
+  gutterHoursPerM: 0.12,         // install gutters
+  guardHoursPerM: 0.08,          // install guards
+  downpipeHoursEach: 0.50,       // fit/replace downpipe
+  removalHoursPerM: 0.05,        // remove & dispose old
+  cleaningHoursPerM: 0.04,       // clean gutters prior to guard
+  // Access & pitch impacts as hour multipliers/adders
+  storeyMultiplier: { single: 1.0, double: 1.15 },
+  pitchExtraHoursPerM: { low: 0.00, medium: 0.04, steep: 0.08 }
+};
+
+// Material/consumable budget assumptions (AUD)
+const MATERIALS = {
+  gutterPerM: { colorbond: 22, premium: 60, box: 80, none: 0 },
+  guardPerM:  { none: 0, plastic: 8, aluminium: 20, steel: 35, foam: 12 },
+  downpipeEach: { standard: 55, premium: 95 },
+  disposalPerM: 3,               // tip fees, bags, etc.
+  cleaningConsumablesPerM: 1.5   // brushes, sealants share, etc.
+};
+
+const LABOUR_RATE = 214.5; // $/hr
+
+function money(n){return Number(n||0).toLocaleString('en-AU',{style:'currency',currency:'AUD'})}
 
 function calcEstimate(){
   const lengthM = +document.getElementById('lengthM').value || 0;
@@ -266,138 +306,231 @@ function calcEstimate(){
   const boom = document.getElementById('boom').checked;
   const travel = document.getElementById('travel').checked;
   const urgent = document.getElementById('urgent').checked;
-  const targetMarginPct = +document.getElementById('targetMargin').value || 0; // as % of sell price
+  const tiledRoof = document.getElementById('tiledRoof').checked;
+  const skipBin = document.getElementById('skipBin').checked;
+  const targetMarginPct = 70; // fixed gross margin %
   const includeGST = document.getElementById('includeGST').checked;
 
-  // Base per-m costs
-  const gutterCost = RATES.gutterPerM[gutterType] * lengthM;
-  const guardCost = RATES.guardPerM[guardType] * lengthM;
-  const downpipeCost = RATES.downpipeEach[downpipeType] * downpipes;
-
-  // Access multipliers / extras
-  const accessMult = RATES.accessMultiplier[storeys] || 1;
-  const pitchAdder = RATES.pitchExtraPerM[pitch] * lengthM; // flat adder based on pitch
-
-  let subtotal = 0;
+  // Category accumulators and line collector
+  const totals = { labour:0, materials:0, hire:0, other:0 };
   const lines = [];
+  function addLine(label, qty, cost){ lines.push({label, qty, cost}); return cost; }
 
-  if(gutterCost>0){
-    const adj = gutterCost * accessMult + pitchAdder; // pitch adder applied once per line item set
-    lines.push({label:`Gutters (${gutterType})`, qty:`${lengthM.toFixed(1)} m`, cost: adj});
-    subtotal += adj;
-  }
+  // ===== Labour hours model =====
+  const segments10 = Math.ceil(lengthM/10);
+  let singleTechHours = PRODUCTIVITY.setupBaseHours + PRODUCTIVITY.setupPer10mHours * Math.max(0, segments10);
 
-  if(guardCost>0){
-    const adj = guardCost * accessMult; // guards usually follow gutter access difficulty
-    lines.push({label:`Gutter guards (${guardType})`, qty:`${lengthM.toFixed(1)} m`, cost: adj});
-    subtotal += adj;
-  }
+  if(gutterType !== 'none') singleTechHours += lengthM * PRODUCTIVITY.gutterHoursPerM;
+  if(guardType !== 'none')  singleTechHours += lengthM * PRODUCTIVITY.guardHoursPerM;
+  if(downpipes > 0)         singleTechHours += downpipes * PRODUCTIVITY.downpipeHoursEach;
+  if(needRemoval)           singleTechHours += lengthM * PRODUCTIVITY.removalHoursPerM;
+  if(needCleaning && guardType !== 'none') singleTechHours += lengthM * PRODUCTIVITY.cleaningHoursPerM;
 
-  if(downpipeCost>0){
-    const adj = downpipeCost * accessMult;
-    lines.push({label:`Downpipes (${downpipeType})`, qty:`${downpipes} ea`, cost: adj});
-    subtotal += adj;
-  }
+  // Access adjustments (still expressed as single-tech hours)
+  singleTechHours *= (PRODUCTIVITY.storeyMultiplier[storeys] || 1.0);
+  singleTechHours += (PRODUCTIVITY.pitchExtraHoursPerM[pitch] || 0) * lengthM;
 
-  if(needRemoval){
-    const cost = RATES.removalPerM * lengthM;
-    lines.push({label:`Removal & disposal`, qty:`${lengthM.toFixed(1)} m`, cost});
-    subtotal += cost;
-  }
+  // Crew and day planning (hours are fixed as two-person equivalent)
+  const crewCount = Math.max(1, +document.getElementById('crewCount').value || 1);
+  const allowLongDay = document.getElementById('allowLongDay').checked;
+  const requiredHours = singleTechHours * 2; // two-person requirement (fixed)
+  const perPersonHours = requiredHours / crewCount;
+  const stdDayPerPerson = 8;
+  const longDayPerPerson = 10;
+  let plannedDays = Math.ceil(perPersonHours / stdDayPerPerson);
+  if(allowLongDay && perPersonHours > stdDayPerPerson && perPersonHours <= longDayPerPerson){ plannedDays = 1; }
 
-  if(needCleaning && guardType!=="none"){
-    const cost = RATES.cleaningPerM * lengthM;
-    lines.push({label:`Gutter cleaning (pre-guard)`, qty:`${lengthM.toFixed(1)} m`, cost});
-    subtotal += cost;
-  }
+  // Labour cost uses required hours (rate is per person-hour)
+  let labourCost = requiredHours * LABOUR_RATE;
+  totals.labour += labourCost;
+  addLine(`Labour (${requiredHours.toFixed(2)} hrs @ ${money(LABOUR_RATE)}/hr)`, `${crewCount} person team`, labourCost);
 
-  if(scaffolding){
-    lines.push({label:`Scaffolding (flat)`, qty:`1`, cost:RATES.scaffoldingFlat});
-    subtotal += RATES.scaffoldingFlat;
-  }
+  // ===== Materials =====
+  let materialsCost = 0;
+  if(gutterType !== 'none'){ const v = lengthM * (MATERIALS.gutterPerM[gutterType]||0); if(v>0){ materialsCost += v; addLine(`Materials – Gutters (${gutterType})`, `${lengthM.toFixed(1)} m`, v); } }
+  if(guardType !== 'none'){  const v = lengthM * (MATERIALS.guardPerM[guardType]||0);   if(v>0){ materialsCost += v; addLine(`Materials – Guards (${guardType})`, `${lengthM.toFixed(1)} m`, v); } }
+  if(downpipes>0){ const v = downpipes * (MATERIALS.downpipeEach[downpipeType]||0); if(v>0){ materialsCost += v; addLine(`Materials – Downpipes (${downpipeType})`, `${downpipes} ea`, v); } }
+  if(needRemoval){ const v = (MATERIALS.disposalPerM||0) * lengthM; if(v>0){ materialsCost += v; addLine(`Disposal fees`, `${lengthM.toFixed(1)} m`, v); } }
+  if(needCleaning && guardType !== 'none'){ const v = (MATERIALS.cleaningConsumablesPerM||0) * lengthM; if(v>0){ materialsCost += v; addLine(`Cleaning consumables`, `${lengthM.toFixed(1)} m`, v); } }
+  if(colourUpcharge>0){ materialsCost += colourUpcharge; addLine(`Premium colour upcharge`, `1`, colourUpcharge); }
+  totals.materials += materialsCost;
 
-  if(boom){
-    lines.push({label:`Boom lift (1 day)`, qty:`1`, cost:RATES.boomPerDay});
-    subtotal += RATES.boomPerDay;
-  }
+  // ===== Hire equipment =====
+  if(scaffolding && segments10>0){ const c = RATES.scaffoldingPer10m * segments10; totals.hire += c; addLine(`Scaffolding (per 10m)`, `${segments10} x 10m`, c); }
+  if(boom){ const c = RATES.boomPerDay; totals.hire += c; addLine(`Boom lift (1 day)`, `1`, c); }
+  if(skipBin && segments10>0){ const c = RATES.skipBinPer10m * segments10; totals.hire += c; addLine(`Skip bin (per 10m)`, `${segments10} x 10m`, c); }
+  if(travel){ const c = RATES.travelFlat; totals.other += c; addLine(`Travel surcharge`, `1`, c); }
 
-  if(travel){
-    lines.push({label:`Travel surcharge`, qty:`1`, cost:RATES.travelFlat});
-    subtotal += RATES.travelFlat;
-  }
+  // ===== Uplifts (labour-only) =====
+  let baseForUplifts = labourCost;
+  if(tiledRoof && baseForUplifts>0){ const d = baseForUplifts * (RATES.tiledRoofMultiplier-1); totals.labour += d; addLine(`Tiled roof uplift (x${RATES.tiledRoofMultiplier.toFixed(2)})`, '', d); baseForUplifts *= RATES.tiledRoofMultiplier; }
+  if(urgent && baseForUplifts>0){ const d = baseForUplifts * (RATES.urgentMultiplier-1); totals.labour += d; addLine(`Urgency uplift (x${RATES.urgentMultiplier.toFixed(2)})`, '', d); baseForUplifts *= RATES.urgentMultiplier; }
 
-  if(colourUpcharge>0){
-    lines.push({label:`Premium colour upcharge`, qty:`1`, cost:colourUpcharge});
-    subtotal += colourUpcharge;
-  }
+  // ===== Totals & guidance =====
+  const exTotal = totals.labour + totals.materials + totals.hire + totals.other;
+  const gst = includeGST ? exTotal * 0.10 : 0;
+  const totalIncGST = exTotal + gst;
+  const targetSell = exTotal / (1 - 0.70); // 70% gross margin fixed
+  const low = targetSell * 0.95, high = targetSell * 1.10;
 
-  // Urgency multiplier applies to subtotal (represents labour + handling uplift)
-  let total = urgent ? subtotal * RATES.urgentMultiplier : subtotal;
-
-  // Optional GST
-  const gst = includeGST ? total * 0.10 : 0;
-  const totalIncGST = total + gst;
-
-  // Suggest a quote range based on target margin (sell price vs cost)
-  // If targetMarginPct is margin on sell price (e.g., 30%), sell = cost / (1 - 0.30)
-  const targetSell = targetMarginPct>0 ? total / (1 - targetMarginPct/100) : total;
-  const low = targetSell * 0.95; // give a range buffer
-  const high = targetSell * 1.10;
-
-  // Render summary
   const estSummary = document.getElementById('estSummary');
-  const sellStr = includeGST ? `${money(targetSell+gst)} inc GST` : `${money(targetSell)} ex GST`;
-  const lowStr  = includeGST ? `${money(low+gst)} inc GST` : `${money(low)} ex GST`;
-  const highStr = includeGST ? `${money(high+gst)} inc GST` : `${money(high)} ex GST`;
-
+  const sellInc = targetSell * 1.10; // show sell with GST when toggled on
+  const lowInc  = low * 1.10;
+  const highInc = high * 1.10;
+  const sellStr = includeGST ? `${money(sellInc)} inc GST` : `${money(targetSell)} ex GST`;
+  const lowStr  = includeGST ? `${money(lowInc)} inc GST` : `${money(low)} ex GST`;
+  const highStr = includeGST ? `${money(highInc)} inc GST` : `${money(high)} ex GST`;
   estSummary.innerHTML = `
-    <div class="pill">Estimated cost: <strong>${includeGST? money(totalIncGST)+" inc GST" : money(total)+" ex GST"}</strong></div>
-    <div class="pill">Target sell (~${targetMarginPct}% margin): <strong>${sellStr}</strong></div>
+    <div class="pill">Estimated cost: <strong>${includeGST? money(totalIncGST)+" inc GST" : money(exTotal)+" ex GST"}</strong></div>
+    <div class="pill">Target sell (~70% margin): <strong>${sellStr}</strong></div>
     <div class="pill">Quote range: <strong>${lowStr}</strong> – <strong>${highStr}</strong></div>
+    <div class="pill">Team: <strong>${crewCount}</strong> · Hours required: <strong>${requiredHours.toFixed(2)}</strong> · Planned days: <strong>${plannedDays}</strong>${allowLongDay? ' (long-day option)':''}</div>
   `;
 
-  // Build breakdown table
+  // Breakdown table
   const tbl = document.getElementById('breakdownTbl');
   tbl.innerHTML = `<thead><tr><th>Item</th><th>Qty</th><th class="right">Cost</th></tr></thead>`;
   const tb = document.createElement('tbody');
-  lines.forEach(l=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${l.label}</td><td>${l.qty}</td><td class="right">${money(l.cost)}</td>`;
-    tb.appendChild(tr);
-  });
-  const trSub = document.createElement('tr');
-  trSub.innerHTML = `<td><strong>Subtotal</strong></td><td></td><td class="right"><strong>${money(subtotal)}</strong></td>`;
-  tb.appendChild(trSub);
-  if(urgent){
-    const trUrg = document.createElement('tr');
-    trUrg.innerHTML = `<td>Urgency uplift (x${RATES.urgentMultiplier.toFixed(2)})</td><td></td><td class="right">${money(total - subtotal)}</td>`;
-    tb.appendChild(trUrg);
-  }
-  if(includeGST){
-    const trGST = document.createElement('tr');
-    trGST.innerHTML = `<td>GST (10%)</td><td></td><td class="right">${money(gst)}</td>`;
-    tb.appendChild(trGST);
-  }
-  const trTot = document.createElement('tr');
-  trTot.innerHTML = `<td><strong>Total ${includeGST? 'inc' : 'ex'} GST</strong></td><td></td><td class="right"><strong>${includeGST? money(totalIncGST): money(total)}</strong></td>`;
-  tb.appendChild(trTot);
+  lines.forEach(l=>{ const tr=document.createElement('tr'); tr.innerHTML = `<td>${l.label}</td><td>${l.qty}</td><td class="right">${money(l.cost)}</td>`; tb.appendChild(tr); });
+  const trSub=document.createElement('tr'); trSub.innerHTML=`<td><strong>Subtotal</strong></td><td></td><td class="right"><strong>${money(exTotal)}</strong></td>`; tb.appendChild(trSub);
+  if(includeGST){ const trGST=document.createElement('tr'); trGST.innerHTML = `<td>GST (10%)</td><td></td><td class="right">${money(gst)}</td>`; tb.appendChild(trGST); }
+  const trTot=document.createElement('tr'); trTot.innerHTML=`<td><strong>Total ${includeGST? 'inc' : 'ex'} GST</strong></td><td></td><td class="right"><strong>${includeGST? money(totalIncGST): money(exTotal)}</strong></td>`; tb.appendChild(trTot);
   tbl.appendChild(tb);
 
-  // Margin guidance vs your target
-  const marginOnSell = targetSell>0 ? (1 - total/targetSell) * 100 : 0;
+  // Category table
+  const billedHours = requiredHours; // hours charged (uplifts affect $ not hours)
+  const catTbl = document.getElementById('categoryTbl');
+  catTbl.innerHTML = `<thead><tr><th>Category</th><th class="right">Amount</th></tr></thead>`;
+  const ctb = document.createElement('tbody');
+  const catRows = [
+    [`Labour (billed ${billedHours.toFixed(2)} hrs)`, totals.labour],
+    ['Materials', totals.materials],
+    ['Hire equipment', totals.hire],
+    ['Other', totals.other],
+  ];
+  catRows.forEach(([name,val])=>{ const tr=document.createElement('tr'); tr.innerHTML = `<td>${name}</td><td class="right">${money(val)}</td>`; ctb.appendChild(tr); });
+  const trCatSum=document.createElement('tr'); trCatSum.innerHTML = `<td><strong>Sum (ex GST)</strong></td><td class="right"><strong>${money(exTotal)}</strong></td>`; ctb.appendChild(trCatSum);
+  catTbl.appendChild(ctb);
+
+  // Margin guidance vs target
+  const marginOnSell = targetSell>0 ? (1 - exTotal/targetSell) * 100 : 0;
   const marginMsg = document.getElementById('marginMsg');
   let cls = 'ok';
-  if(marginOnSell < targetMarginPct - 2) cls = 'bad';
-  else if(marginOnSell < targetMarginPct) cls = 'warn';
+  if(marginOnSell < 68) cls = 'bad';
+  else if(marginOnSell < 70) cls = 'warn';
   marginMsg.innerHTML = `<div>Achieved margin at target sell: <span class="${cls}">${marginOnSell.toFixed(1)}%</span></div>`;
 }
 
-document.getElementById('calcBtn').addEventListener('click', calcEstimate);
-// also live-calc on input changes
-Array.from(document.querySelectorAll('input,select')).forEach(el=>el.addEventListener('input', calcEstimate));
+// Wire up
+function onReady(){
+  document.getElementById('calcBtn').addEventListener('click', calcEstimate);
+  Array.from(document.querySelectorAll('input,select')).forEach(el=>el.addEventListener('input', calcEstimate));
+  calcEstimate();
+  maybeRunTests();
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', onReady); else onReady();
 
-// Initial render
-calcEstimate();
+/*****************
+ * SELF-TESTS
+ *****************/
+function snapshotForm(){
+  const data = {};
+  Array.from(document.querySelectorAll('input,select')).forEach(el=>{
+    data[el.id] = el.type==='checkbox' ? el.checked : el.value;
+  });
+  return data;
+}
+function restoreForm(data){
+  Array.from(document.querySelectorAll('input,select')).forEach(el=>{
+    if(!(el.id in data)) return;
+    if(el.type==='checkbox') el.checked = !!data[el.id]; else el.value = data[el.id];
+  });
+}
+function getExTotal(){
+  const rows = document.querySelectorAll('#breakdownTbl tbody tr');
+  if(!rows.length) return 0;
+  // last row is Total; previous row is GST optional; we already know ex total from subtotal row
+  const subRow = Array.from(rows).find(r=>/Subtotal/.test(r.textContent));
+  if(!subRow) return 0;
+  const val = subRow.querySelector('td.right').textContent;
+  return Number(val.replace(/[^0-9.\-]/g,''));
+}
+function getCategoryValueByRow(idx){
+  const row = document.querySelector(`#categoryTbl tbody tr:nth-child(${idx}) td.right`);
+  return row ? Number(row.textContent.replace(/[^0-9.\-]/g,'')) : 0;
+}
+function maybeRunTests(){
+  const params = new URLSearchParams(location.search);
+  if(params.get('showTests') !== '1') return; // opt-in only
+  const out = [];
+  const testsDiv = document.getElementById('tests');
+  testsDiv.style.display = 'block';
+  const orig = snapshotForm();
+
+  // Test D: 2-person team, ~16 crew-hrs => 1 day (no long-day override required)
+  document.getElementById('crewCount').value = 2;
+  document.getElementById('allowLongDay').checked = false;
+  document.getElementById('lengthM').value = 0;
+  document.getElementById('downpipes').value = 0;
+  document.getElementById('gutterType').value = 'colorbond';
+  document.getElementById('guardType').value = 'none';
+  document.getElementById('needRemoval').checked = false;
+  document.getElementById('needCleaning').checked = false;
+  document.getElementById('storeys').value = 'single';
+  document.getElementById('pitch').value = 'low';
+  // Back solve length roughly: singleTechHours ≈ 8 → crew-hrs ≈ 16
+  document.getElementById('lengthM').value = Math.round((8 - PRODUCTIVITY.setupBaseHours) / PRODUCTIVITY.gutterHoursPerM);
+  calcEstimate();
+  let txt = document.getElementById('estSummary').textContent;
+  out.push(/Planned days: 1/.test(txt) ? 'Test D PASS' : 'Test D FAIL');
+
+  // Test E: long-day option with crew-hrs ≤20 → 1 day
+  document.getElementById('allowLongDay').checked = true;
+  document.getElementById('lengthM').value = Math.round((9 - PRODUCTIVITY.setupBaseHours) / PRODUCTIVITY.gutterHoursPerM); // ~18 crew-hrs
+  calcEstimate();
+  txt = document.getElementById('estSummary').textContent;
+  out.push(/Planned days: 1/.test(txt) ? 'Test E PASS' : 'Test E FAIL');
+
+  // Test F: over 20 crew-hrs with long-day → 2 days
+  document.getElementById('lengthM').value = Math.round((10.6 - PRODUCTIVITY.setupBaseHours) / PRODUCTIVITY.gutterHoursPerM); // ~21+ crew-hrs
+  calcEstimate();
+  txt = document.getElementById('estSummary').textContent;
+  out.push(/Planned days: 2/.test(txt) ? 'Test F PASS' : 'Test F FAIL');
+
+  // Test G: labour category equals required-hrs * rate when no uplifts
+  document.getElementById('allowLongDay').checked = false;
+  document.getElementById('tiledRoof').checked = false;
+  document.getElementById('urgent').checked = false;
+  document.getElementById('lengthM').value = Math.round((6 - PRODUCTIVITY.setupBaseHours) / PRODUCTIVITY.gutterHoursPerM); // yields some required hours
+  calcEstimate();
+  const labourValG = getCategoryValueByRow(1);
+  const pillTextG = document.getElementById('estSummary').textContent;
+  const mHours = /Hours required: ([0-9.]+)/.exec(pillTextG);
+  const hoursReq = mHours ? parseFloat(mHours[1]) : 0;
+  const expectLabour = hoursReq * LABOUR_RATE;
+  out.push(Math.abs(labourValG - expectLabour) < 0.01 ? 'Test G PASS' : `Test G FAIL (expected ${expectLabour}, got ${labourValG})`);
+
+  // Test H: Urgent uplift adds 25% of base labour (no tiled)
+  document.getElementById('urgent').checked = true;
+  calcEstimate();
+  const labourValH = getCategoryValueByRow(1);
+  out.push(labourValH > labourValG && Math.abs(labourValH - (expectLabour * 1.25)) < 1 ? 'Test H PASS' : 'Test H FAIL');
+
+  // Test I: Target sell displays GST correctly when toggled on
+  document.getElementById('includeGST').checked = true;
+  calcEstimate();
+  const exTotal = getExTotal();
+  const expectedSellInc = (exTotal / (1 - 0.70)) * 1.10; // add GST to sell
+  const sellText = document.getElementById('estSummary').textContent;
+  const mSell = /Target sell \(~70% margin\): \$([0-9,\.]+)/.exec(sellText);
+  let gotSellInc = 0;
+  if(mSell){ gotSellInc = Number(mSell[1].replace(/[,]/g,'')); }
+  out.push(Math.abs(gotSellInc - expectedSellInc) < 1 ? 'Test I PASS' : `Test I FAIL (expected ${expectedSellInc.toFixed(2)}, got ${gotSellInc.toFixed(2)})`);
+
+  document.getElementById('testOutput').textContent = out.join('\n');
+  restoreForm(orig);
+  calcEstimate();
+}
 </script>
 
 </body>
