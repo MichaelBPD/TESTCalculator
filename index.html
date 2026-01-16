@@ -36,7 +36,7 @@
     th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
     .right{text-align:right}
 
-    /* --- Added: logo + passcode overlay (minimal, does not touch your existing layout) --- */
+    /* --- Header logo ONLY (absolute positioning) --- */
     .logo{
       position:absolute;
       left:16px;
@@ -49,8 +49,10 @@
     }
     @media(max-width:520px){
       .logo{height:38px;max-width:140px}
-      header{padding-top:70px} /* gives room for logo on small screens */
+      header{padding-top:70px}
     }
+
+    /* --- Passcode overlay --- */
     .gate{
       position:fixed;
       inset:0;
@@ -68,6 +70,17 @@
       box-shadow:0 8px 24px rgba(0,0,0,.25);
       padding:16px;
     }
+
+    /* NEW: logo styling inside passcode card */
+    .gate-logo{
+      display:block;
+      margin:6px auto 10px;
+      max-width:220px;
+      width:70%;
+      height:52px;
+      object-fit:contain;
+    }
+
     .gate-title{
       margin:0 0 6px;
       color:var(--brand);
@@ -103,20 +116,40 @@
       font-size:13px;
       display:none;
     }
-    /* --- End additions --- */
+
+    /* NEW: estimate header layout + logo */
+    .summary-head{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      margin:0 0 6px;
+    }
+    .summary-logo{
+      height:28px;
+      width:auto;
+      max-width:140px;
+      object-fit:contain;
+      display:inline-block;
+      vertical-align:middle;
+    }
   </style>
 </head>
 <body>
 
 <header>
+  <!-- Optional: if you want a logo in the main yellow header too, uncomment this -->
+  <!-- <img class="logo" src="Logo.png" alt="Logo" /> -->
+
   <h1>Quote Calculator</h1>
   <p>All prices include labour, materials and markups unless specified otherwise</p>
 </header>
 
-<!-- Added: passcode gate -->
+<!-- Passcode gate -->
 <div class="gate" id="gate">
   <div class="gate-card">
-    <img class="logo" src="Logo.png" alt="Logo" />
+    <img class="gate-logo" src="Logo.png" alt="Logo" />
+
     <h2 class="gate-title">Enter Passcode</h2>
     <p class="gate-sub">This calculator is restricted.</p>
 
@@ -239,9 +272,11 @@
     </div>
 
     <div class="card summary">
-      <!-- Added: logo (won’t affect your header styling) -->
-      
-      <h2><img class="logo" src="Logo.png" alt="Logo" /> Estimate</h2>
+      <div class="summary-head">
+        <img class="summary-logo" src="Logo.png" alt="Logo" />
+        <h2 style="margin:0;color:var(--brand);text-align:center">Estimate</h2>
+      </div>
+
       <div id="topPills"></div>
       <table id="breakdown"></table>
     </div>
@@ -249,8 +284,8 @@
 </div>
 
 <script>
-/* Added: simple passcode gate */
-const REQUIRED_PASSCODE = "8008"; // <-- change this
+/* Passcode gate */
+const REQUIRED_PASSCODE = "8008";
 const gate = document.getElementById("gate");
 const passcodeInput = document.getElementById("passcodeInput");
 const unlockBtn = document.getElementById("unlockBtn");
@@ -273,7 +308,7 @@ passcodeInput.addEventListener("keydown", (e)=>{
   if(e.key === "Enter") unlock();
 });
 
-/* --- Your original calculator script (unchanged) --- */
+/* --- Original calculator script --- */
 const PRICING = {
   guttersPerM: { single: 325, double: 375 },
   cornerEach: 250,
@@ -310,7 +345,6 @@ function calc(){
     if(cost > 0) lines.push({label, cost: cost * gstFactor});
   };
 
-  // Tile roof now applies to: gutters, corners, rakes, gutter guard (NOT downpipes)
   add("Gutters", (lengthMEl.value * PRICING.guttersPerM[storeys]) * tileFactor);
   add("Corners", (cornersEl.value * PRICING.cornerEach) * tileFactor);
   add("Rakes", (rakesEl.value * PRICING.rakeEach) * tileFactor);
@@ -318,7 +352,6 @@ function calc(){
   const guardBlocks = Math.ceil(guardsLengthMEl.value / 10);
   add("Gutter guard", (guardBlocks * PRICING.guardPer10M[storeys]) * tileFactor);
 
-  // Downpipes (no tile factor)
   const dpRate = PRICING.downpipeEach[downpipeTypeEl.value][storeys];
   add("Downpipes", downpipesEl.value * dpRate);
 
