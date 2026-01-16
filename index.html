@@ -17,7 +17,6 @@
     }
     *{box-sizing:border-box}
     body{font-family:Arial,Helvetica,sans-serif;margin:0;background:var(--bg);color:var(--text)}
-
     header{padding:22px 16px;text-align:center}
     h1{margin:0 0 6px;color:var(--brand)}
     p{margin:0;color:var(--muted)}
@@ -26,10 +25,9 @@
     .grid{display:grid;grid-template-columns:1fr;gap:16px}
     @media(min-width:900px){.grid{grid-template-columns:1.1fr .9fr}}
 
-    .card{background:#fff;border-radius:18px;box-shadow:0 2px 10px rgba(0,0,0,.12);padding:16px}
-    fieldset{border:1px solid #eee;border-radius:12px;padding:12px;margin-bottom:12px}
+    .card{background:var(--card);border-radius:18px;box-shadow:0 2px 10px rgba(0,0,0,.12);padding:16px}
+    fieldset{border:1px solid #eee;border-radius:12px;padding:12px;margin:0 0 12px}
     legend{padding:0 8px;color:#555}
-
     label{display:block;font-weight:700;margin:10px 0 6px}
     input[type="number"], input[type="password"], select{
       width:100%;padding:10px;border:1px solid #ccc;border-radius:10px;font-size:15px
@@ -37,213 +35,381 @@
 
     .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .inline{display:flex;align-items:center;gap:10px;margin-top:8px}
-    .muted{font-size:12px;color:#666}
+    .muted{font-size:12px;color:var(--muted)}
 
     .summary h2{margin:0;color:var(--brand);text-align:center}
     .pill{display:inline-block;background:#f4f4f4;border-radius:999px;padding:7px 12px;margin:6px}
-
     table{width:100%;border-collapse:collapse;margin-top:10px}
-    th,td{padding:8px;border-bottom:1px solid #eee}
+    th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
     .right{text-align:right}
 
-    /* ===== LOCK SCREEN ===== */
-    .lock-wrap{
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:16px;
-    }
+    /* Lock screen */
+    .lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
     .lock-card{
-      width:min(420px,100%);
-      background:#fff;
-      border-radius:24px;
+      width:min(520px,100%);
+      background:#fff;border-radius:24px;
       box-shadow:0 4px 14px rgba(0,0,0,.18);
-      padding:20px;
-      text-align:center;
+      padding:20px;text-align:center;
     }
-    .lock-logo{max-height:60px;margin-bottom:10px}
+    .lock-top{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}
+    .lock-logo{max-height:60px;max-width:200px}
     .btn{
-      width:100%;
-      border:0;
-      border-radius:12px;
-      padding:12px;
-      background:var(--blue);
-      color:#fff;
-      font-size:16px;
-      font-weight:700;
-      cursor:pointer;
-      margin-top:10px;
+      width:100%;border:0;border-radius:12px;padding:12px;
+      background:var(--blue);color:#fff;font-size:16px;font-weight:700;cursor:pointer;margin-top:10px
     }
     .btn:hover{background:#0056b3}
     .err{color:var(--red);font-weight:700;margin-top:10px;display:none}
+
+    .brandbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .brandbar img{max-height:52px}
   </style>
 </head>
 
 <body>
-
-<!-- ================= LOCK SCREEN ================= -->
-<div id="lockScreen" class="lock-wrap">
-  <div class="lock-card">
-    <img src="Logo.png" alt="Logo" class="lock-logo" />
-    <h2 style="color:var(--brand);margin:0">Restricted Access</h2>
-    <p class="muted" style="margin:6px 0 14px">Enter passcode to access calculator</p>
-
-    <input id="passcode" type="password" placeholder="Passcode" />
-    <button id="unlockBtn" class="btn">Unlock</button>
-
-    <div id="lockError" class="err">Incorrect passcode</div>
-  </div>
-</div>
-
-<!-- ================= CALCULATOR APP ================= -->
-<div id="app" style="display:none;">
-
-<header>
-  <h1>Quote Calculator</h1>
-  <p>All prices include labour, materials and markups unless specified otherwise</p>
-</header>
-
-<div class="wrap">
-  <div class="grid">
-
-    <div class="card">
-      <fieldset>
-        <legend>Job basics</legend>
-        <div class="row">
-          <div>
-            <label for="storeys">Storey</label>
-            <select id="storeys">
-              <option value="single">Single</option>
-              <option value="double">Double</option>
-            </select>
-          </div>
-          <div>
-            <label for="twoDay">Job length</label>
-            <select id="twoDay">
-              <option value="no">Standard</option>
-              <option value="yes">2 Day likely job</option>
-            </select>
-          </div>
+  <!-- ================= LOCK SCREEN ================= -->
+  <div id="lockScreen" class="lock-wrap">
+    <div class="lock-card">
+      <div class="lock-top">
+        <img class="lock-logo" src="Logo.png" alt="Logo" />
+        <div>
+          <h2 style="margin:0;color:var(--brand)">Restricted Access</h2>
+          <div class="muted" style="margin-top:6px">Enter passcode to load the calculator</div>
         </div>
+      </div>
 
-        <label>Difficult access allowance ($)</label>
-        <input id="accessAllowance" type="number" value="0" min="0" />
-      </fieldset>
-
-      <fieldset>
-        <legend>Gutters</legend>
-        <label>Gutter length (m)</label>
-        <input id="lengthM" type="number" value="0" min="0" step="1" />
-
-        <div class="row">
-          <div>
-            <label>Corners</label>
-            <input id="corners" type="number" value="0" min="0" />
-          </div>
-          <div>
-            <label>Rakes</label>
-            <input id="rakes" type="number" value="0" min="0" />
-          </div>
-        </div>
-
-        <label>Gutter guard length (m)</label>
-        <input id="guardsLengthM" type="number" value="0" min="0" step="10" />
-        <div class="muted">Charged per 10 metres</div>
-      </fieldset>
-
-      <fieldset>
-        <legend>Options</legend>
-        <div class="inline">
-          <input type="checkbox" id="tileRoof" />
-          <label>Tile roof (x1.25 gutters, corners, rakes & guards)</label>
-        </div>
-        <div class="inline">
-          <input type="checkbox" id="excludeGST" />
-          <label>Exclude GST (ex GST)</label>
-        </div>
-      </fieldset>
+      <label for="passcode" style="text-align:left;margin-top:14px">Passcode</label>
+      <input id="passcode" type="password" placeholder="Passcode" />
+      <button id="unlockBtn" class="btn" type="button">Unlock</button>
+      <div id="lockError" class="err">Incorrect passcode.</div>
     </div>
-
-    <div class="card summary">
-      <h2>Estimate</h2>
-      <div id="topPills"></div>
-      <table id="breakdown"></table>
-    </div>
-
   </div>
-</div>
-</div>
 
-<script>
-/* ========= PASSCODE ========= */
-const CORRECT_PASSCODE = "8008";
+  <!-- ================= APP (HIDDEN UNTIL UNLOCK) ================= -->
+  <div id="app" style="display:none;">
+    <header>
+      <h1>Quote Calculator</h1>
+      <p>All prices include labour, materials and markups unless specified otherwise</p>
+    </header>
 
-document.getElementById("unlockBtn").addEventListener("click", unlock);
-document.getElementById("passcode").addEventListener("keydown", e => {
-  if(e.key === "Enter") unlock();
-});
+    <div class="wrap">
+      <div class="grid">
+        <!-- LEFT -->
+        <div class="card">
+          <fieldset>
+            <legend>Job basics</legend>
+            <div class="row">
+              <div>
+                <label for="storeys">Storey</label>
+                <select id="storeys">
+                  <option value="single" selected>Single story</option>
+                  <option value="double">Double story</option>
+                </select>
+              </div>
+              <div>
+                <label for="twoDay">Job length</label>
+                <select id="twoDay">
+                  <option value="no" selected>Standard</option>
+                  <option value="yes">2 Day likely job</option>
+                </select>
+                <div class="muted">Adds $500 2nd day setup and affects boom days.</div>
+              </div>
+            </div>
 
-function unlock(){
-  const entered = document.getElementById("passcode").value;
-  if(entered === CORRECT_PASSCODE){
-    document.getElementById("lockScreen").style.display = "none";
-    document.getElementById("app").style.display = "block";
-    initCalculator();
-  } else {
-    document.getElementById("lockError").style.display = "block";
-  }
-}
+            <div class="row">
+              <div>
+                <label for="accessAllowance">Difficult access allowance ($)</label>
+                <input type="number" id="accessAllowance" min="0" step="1" value="0" />
+              </div>
+              <div></div>
+            </div>
+          </fieldset>
 
-/* ========= CALCULATOR ========= */
-function money(n){
-  return Number(n||0).toLocaleString("en-AU",{style:"currency",currency:"AUD"});
-}
-function round10(n){ return Math.round(n/10)*10; }
+          <fieldset>
+            <legend>Gutters</legend>
+            <div class="row">
+              <div>
+                <label for="lengthM">Gutter length (metres)</label>
+                <input type="number" id="lengthM" min="0" step="1" value="0" />
+                <div class="muted">Whole metres only</div>
+              </div>
+              <div>
+                <label for="corners">Corners (qty)</label>
+                <input type="number" id="corners" min="0" step="1" value="0" />
+                <div class="muted">$250 each</div>
+              </div>
+            </div>
 
-const PRICING = {
-  gutters:{single:300,double:350},
-  corner:250,
-  rake:350,
-  guard:{single:1250,double:1500},
-  tile:1.25,
-  day2:500,
-  gst:1.1
-};
+            <div class="row">
+              <div>
+                <label for="rakes">Rakes (qty)</label>
+                <input type="number" id="rakes" min="0" step="1" value="0" />
+                <div class="muted">$350 each</div>
+              </div>
+              <div>
+                <label for="guardsLengthM">Gutter guard length (metres)</label>
+                <input type="number" id="guardsLengthM" min="0" step="10" value="0" />
+                <div class="muted">Charged per 10 metres (rounded to nearest 10m)</div>
+              </div>
+            </div>
+          </fieldset>
 
-function initCalculator(){
-  document.querySelectorAll("#app input, #app select").forEach(el=>{
-    el.addEventListener("input", calc);
-  });
-  calc();
-}
+          <fieldset>
+            <legend>Downpipes</legend>
+            <div class="row">
+              <div>
+                <label for="downpipeType">Downpipe type</label>
+                <select id="downpipeType">
+                  <option value="pvc" selected>PVC</option>
+                  <option value="metal">Metal</option>
+                </select>
+              </div>
+              <div>
+                <label for="downpipes">Downpipes (qty)</label>
+                <input type="number" id="downpipes" min="0" step="1" value="0" />
+              </div>
+            </div>
+            <div class="muted">
+              PVC: $450 single / $650 double · Metal: $650 single / $850 double
+            </div>
+          </fieldset>
 
-function calc(){
-  const s = storeys.value;
-  const tile = tileRoof.checked ? PRICING.tile : 1;
-  const gst = excludeGST.checked ? 1/PRICING.gst : 1;
+          <fieldset>
+            <legend>Access equipment</legend>
+            <div class="inline">
+              <input type="checkbox" id="scaffolding" />
+              <label for="scaffolding" style="margin:0;font-weight:700">Scaffolding</label>
+            </div>
+            <div class="muted">Defaults to $4,000</div>
 
-  guardsLengthM.value = round10(+guardsLengthM.value||0);
+            <div class="inline" style="margin-left:20px">
+              <input type="checkbox" id="difficultScaffolding" />
+              <label for="difficultScaffolding" style="margin:0;font-weight:700">Difficult scaffolding (x1.5)</label>
+            </div>
+            <div class="muted" style="margin-left:20px">Only applies if scaffolding is ticked.</div>
 
-  const lines = [];
-  const add=(l,c)=>{ if(c>0) lines.push({l,c:c*gst}); };
+            <hr style="border:0;border-top:1px solid #eee;margin:12px 0">
 
-  add("Gutters", lengthM.value*PRICING.gutters[s]*tile);
-  add("Corners", corners.value*PRICING.corner*tile);
-  add("Rakes", rakes.value*PRICING.rake*tile);
-  add("Gutter guard", (guardsLengthM.value/10)*PRICING.guard[s]*tile);
-  add("Access allowance", accessAllowance.value);
-  if(twoDay.value==="yes") add("2nd day setup", PRICING.day2);
+            <div class="inline">
+              <input type="checkbox" id="boom" />
+              <label for="boom" style="margin:0;font-weight:700">Boom lift</label>
+            </div>
+            <div class="muted">
+              Travel $1,200 + $300/day (days affected by “2 Day likely job”)
+            </div>
+          </fieldset>
 
-  const total = lines.reduce((a,b)=>a+b.c,0);
+          <fieldset>
+            <legend>Options</legend>
+            <div class="inline">
+              <input type="checkbox" id="tileRoof" />
+              <label for="tileRoof" style="margin:0;font-weight:700">
+                Tile roof (x1.25 gutters, corners, rakes & gutter guard)
+              </label>
+            </div>
+          </fieldset>
 
-  topPills.innerHTML = `<div class="pill">Total: <strong>${money(total)}</strong></div>`;
-  breakdown.innerHTML = `
-    <tr><th>Item</th><th class="right">Price</th></tr>
-    ${lines.map(x=>`<tr><td>${x.l}</td><td class="right">${money(x.c)}</td></tr>`).join("")}
-    <tr><td><strong>Total</strong></td><td class="right"><strong>${money(total)}</strong></td></tr>`;
-}
-</script>
+          <fieldset>
+            <legend>GST</legend>
+            <div class="inline">
+              <input type="checkbox" id="excludeGST" />
+              <label for="excludeGST" style="margin:0;font-weight:700">Exclude GST (ex GST)</label>
+            </div>
+            <div class="muted">All values will be divided by 1.1.</div>
+          </fieldset>
 
+          <div class="muted">Tip: change values and it will auto-recalculate.</div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="card summary">
+          <div class="brandbar">
+            <h2>Estimate</h2>
+            <img src="Logo.png" alt="Logo" />
+          </div>
+          <div id="topPills" style="text-align:center"></div>
+          <table id="breakdown" aria-label="Breakdown"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***************
+     * PASSCODE GATE (no storage, enter every time)
+     ***************/
+    const CORRECT_PASSCODE = "8008"; // change this
+
+    const lockError = document.getElementById("lockError");
+    const passcodeInput = document.getElementById("passcode");
+    const unlockBtn = document.getElementById("unlockBtn");
+
+    function unlock(){
+      if(passcodeInput.value === CORRECT_PASSCODE){
+        lockError.style.display = "none";
+        document.getElementById("lockScreen").style.display = "none";
+        document.getElementById("app").style.display = "block";
+        initCalculator(); // only init after unlock
+      } else {
+        lockError.style.display = "block";
+      }
+    }
+
+    unlockBtn.addEventListener("click", unlock);
+    passcodeInput.addEventListener("keydown", (e)=>{ if(e.key === "Enter") unlock(); });
+
+    /*********************
+     * CALCULATOR (only runs after unlock)
+     *********************/
+    const PRICING = {
+      guttersPerM: { single: 300, double: 350 },
+      cornerEach: 250,
+      rakeEach: 350,
+      guardPer10M: { single: 1250, double: 1500 },
+      downpipeEach: {
+        pvc:   { single: 450, double: 650 },
+        metal: { single: 650, double: 850 }
+      },
+      scaffoldingDefault: 4000,
+      difficultScaffoldingMultiplier: 1.5,
+      boomTravel: 1200,
+      boomPerDay: 300,
+      tileMultiplier: 1.25,
+      secondDaySetup: 500,
+      gstDivisor: 1.1
+    };
+
+    function money(n){
+      return Number(n||0).toLocaleString("en-AU",{style:"currency",currency:"AUD"});
+    }
+    function roundTo10(n){ return Math.round(n/10)*10; }
+    function int0(v){ return Math.max(0, Math.round(Number(v || 0))); }
+    function num0(v){ return Math.max(0, Number(v || 0)); }
+
+    function initCalculator(){
+      const els = {
+        storeys: document.getElementById("storeys"),
+        twoDay: document.getElementById("twoDay"),
+        accessAllowance: document.getElementById("accessAllowance"),
+
+        lengthM: document.getElementById("lengthM"),
+        corners: document.getElementById("corners"),
+        rakes: document.getElementById("rakes"),
+        guardsLengthM: document.getElementById("guardsLengthM"),
+
+        downpipeType: document.getElementById("downpipeType"),
+        downpipes: document.getElementById("downpipes"),
+
+        scaffolding: document.getElementById("scaffolding"),
+        difficultScaffolding: document.getElementById("difficultScaffolding"),
+        boom: document.getElementById("boom"),
+
+        tileRoof: document.getElementById("tileRoof"),
+        excludeGST: document.getElementById("excludeGST"),
+
+        topPills: document.getElementById("topPills"),
+        breakdown: document.getElementById("breakdown")
+      };
+
+      function calc(){
+        const storeys = els.storeys.value;
+        const twoDay = els.twoDay.value === "yes";
+        const tileOn = els.tileRoof.checked;
+        const excludeGST = els.excludeGST.checked;
+
+        const gstFactor = excludeGST ? (1 / PRICING.gstDivisor) : 1;
+        const tileFactor = tileOn ? PRICING.tileMultiplier : 1;
+
+        // Enforce whole metres for gutters
+        const lengthM = int0(els.lengthM.value);
+        els.lengthM.value = lengthM;
+
+        const corners = int0(els.corners.value);
+        const rakes = int0(els.rakes.value);
+        const downpipes = int0(els.downpipes.value);
+
+        // Enforce guard length to nearest 10m
+        const guardsM = roundTo10(num0(els.guardsLengthM.value));
+        els.guardsLengthM.value = guardsM;
+        const guardBlocks = guardsM / 10;
+
+        const accessAllowance = num0(els.accessAllowance.value);
+
+        const lines = [];
+        const add = (label, qty, costIncGST) => {
+          const cost = costIncGST * gstFactor;
+          if(cost > 0) lines.push({label, qty, cost});
+        };
+
+        // Tile affects: gutters, corners, rakes, gutter guard
+        add("Gutters", `${lengthM} m`, (lengthM * PRICING.guttersPerM[storeys]) * tileFactor);
+        add("Corners", `${corners} ea`, (corners * PRICING.cornerEach) * tileFactor);
+        add("Rakes", `${rakes} ea`, (rakes * PRICING.rakeEach) * tileFactor);
+        add("Gutter guard", `${guardsM} m (${guardBlocks} x 10m)`, (guardBlocks * PRICING.guardPer10M[storeys]) * tileFactor);
+
+        // Downpipes NOT affected by tile
+        const dpRate = PRICING.downpipeEach[els.downpipeType.value][storeys];
+        add(`Downpipes (${els.downpipeType.value.toUpperCase()})`, `${downpipes} ea`, downpipes * dpRate);
+
+        add("Difficult access allowance", "Custom", accessAllowance);
+
+        if(twoDay){
+          add("2nd day setup time", "1", PRICING.secondDaySetup);
+        }
+
+        if(els.scaffolding.checked){
+          let scaf = PRICING.scaffoldingDefault;
+          if(els.difficultScaffolding.checked) scaf *= PRICING.difficultScaffoldingMultiplier;
+          add("Scaffolding", els.difficultScaffolding.checked ? "Difficult x1.5" : "Standard", scaf);
+        } else {
+          els.difficultScaffolding.checked = false;
+        }
+        els.difficultScaffolding.disabled = !els.scaffolding.checked;
+
+        if(els.boom.checked){
+          const days = twoDay ? 2 : 1;
+          const boomCost = PRICING.boomTravel + (PRICING.boomPerDay * days);
+          add("Boom lift", `Travel + ${days} day(s)`, boomCost);
+        }
+
+        const total = lines.reduce((s,l)=>s + l.cost, 0);
+
+        els.topPills.innerHTML = `
+          <div class="pill">Total (${excludeGST ? "ex" : "inc"} GST): <strong>${money(total)}</strong></div>
+        `;
+
+        els.breakdown.innerHTML = `
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Qty / Notes</th>
+              <th class="right">Price (${excludeGST ? "ex" : "inc"} GST)</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${lines.map(l => `
+              <tr>
+                <td>${l.label}</td>
+                <td>${l.qty}</td>
+                <td class="right">${money(l.cost)}</td>
+              </tr>
+            `).join("")}
+            <tr>
+              <td><strong>Total</strong></td>
+              <td></td>
+              <td class="right"><strong>${money(total)}</strong></td>
+            </tr>
+          </tbody>
+        `;
+      }
+
+      // Hook inputs after unlock (so nothing runs before)
+      document.querySelectorAll("#app input, #app select").forEach(el=>{
+        el.addEventListener("input", calc);
+        el.addEventListener("change", calc);
+      });
+
+      calc();
+    }
+  </script>
 </body>
 </html>
