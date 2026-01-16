@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Gutter Quote Calculator</title>
+
   <style>
     :root{
       --brand:#ec008c;
@@ -16,6 +17,7 @@
     }
     *{box-sizing:border-box}
     body{font-family:Arial,Helvetica,sans-serif;margin:0;background:var(--bg);color:var(--text)}
+
     header{padding:22px 16px;text-align:center}
     h1{margin:0 0 6px;color:var(--brand)}
     p{margin:0;color:var(--muted)}
@@ -23,38 +25,55 @@
     .wrap{max-width:980px;margin:16px auto;padding:16px}
     .grid{display:grid;grid-template-columns:1fr;gap:16px}
     @media(min-width:900px){.grid{grid-template-columns:1.1fr .9fr}}
-    .card{background:var(--card);border-radius:18px;box-shadow:0 2px 10px rgba(0,0,0,.12);padding:16px}
-    fieldset{border:1px solid #eee;border-radius:12px;padding:12px;margin:0 0 12px}
+
+    .card{background:#fff;border-radius:18px;box-shadow:0 2px 10px rgba(0,0,0,.12);padding:16px}
+    fieldset{border:1px solid #eee;border-radius:12px;padding:12px;margin-bottom:12px}
     legend{padding:0 8px;color:#555}
+
     label{display:block;font-weight:700;margin:10px 0 6px}
     input[type="number"], input[type="password"], select{
       width:100%;padding:10px;border:1px solid #ccc;border-radius:10px;font-size:15px
     }
+
     .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .inline{display:flex;align-items:center;gap:10px;margin-top:8px}
-    .muted{font-size:12px;color:var(--muted)}
-    .summary h2{margin:0 0 6px;color:var(--brand);text-align:center}
-    .pill{display:inline-block;background:#f4f4f4;border-radius:999px;padding:7px 12px;margin:6px 6px}
+    .muted{font-size:12px;color:#666}
+
+    .summary h2{margin:0;color:var(--brand);text-align:center}
+    .pill{display:inline-block;background:#f4f4f4;border-radius:999px;padding:7px 12px;margin:6px}
+
     table{width:100%;border-collapse:collapse;margin-top:10px}
-    th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
+    th,td{padding:8px;border-bottom:1px solid #eee}
     .right{text-align:right}
 
-    /* Lock screen */
-    .lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+    /* ===== LOCK SCREEN ===== */
+    .lock-wrap{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+    }
     .lock-card{
-      width:min(520px, 100%);
-      background:#fff;border-radius:22px;box-shadow:0 2px 12px rgba(0,0,0,.15);
-      padding:18px;
+      width:min(420px,100%);
+      background:#fff;
+      border-radius:24px;
+      box-shadow:0 4px 14px rgba(0,0,0,.18);
+      padding:20px;
       text-align:center;
     }
-    .lock-top{
-      display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;
-      margin-bottom:10px;
-    }
-    .lock-logo{max-height:56px;max-width:180px}
+    .lock-logo{max-height:60px;margin-bottom:10px}
     .btn{
-      width:100%;border:0;border-radius:12px;padding:12px 14px;
-      background:var(--blue);color:#fff;font-size:16px;font-weight:700;cursor:pointer
+      width:100%;
+      border:0;
+      border-radius:12px;
+      padding:12px;
+      background:var(--blue);
+      color:#fff;
+      font-size:16px;
+      font-weight:700;
+      cursor:pointer;
+      margin-top:10px;
     }
     .btn:hover{background:#0056b3}
     .err{color:var(--red);font-weight:700;margin-top:10px;display:none}
@@ -62,331 +81,169 @@
 </head>
 
 <body>
-  <!-- ===================== LOCK SCREEN ===================== -->
-  <div id="lockScreen" class="lock-wrap">
-    <div class="lock-card">
-      <div class="lock-top">
-        <img class="lock-logo" src="Logo.png" alt="Logo" />
-        <div>
-          <h2 style="margin:0;color:var(--brand)">Restricted Access</h2>
-          <div class="muted" style="margin-top:6px">Enter passcode to load the calculator</div>
-        </div>
-      </div>
 
-      <label for="passcode" style="text-align:left;margin-top:12px">Passcode</label>
-      <input id="passcode" type="password" placeholder="Enter passcode" autocomplete="current-password" />
+<!-- ================= LOCK SCREEN ================= -->
+<div id="lockScreen" class="lock-wrap">
+  <div class="lock-card">
+    <img src="Logo.png" alt="Logo" class="lock-logo" />
+    <h2 style="color:var(--brand);margin:0">Restricted Access</h2>
+    <p class="muted" style="margin:6px 0 14px">Enter passcode to access calculator</p>
 
-      <div class="inline" style="justify-content:flex-start">
-        <input id="remember" type="checkbox" />
-        <label for="remember" style="margin:0;font-weight:700">Remember for this browser (7 days)</label>
-      </div>
+    <input id="passcode" type="password" placeholder="Passcode" />
+    <button id="unlockBtn" class="btn">Unlock</button>
 
-      <button id="unlockBtn" class="btn" type="button">Unlock</button>
-      <div id="lockError" class="err">Incorrect passcode.</div>
-    </div>
+    <div id="lockError" class="err">Incorrect passcode</div>
   </div>
+</div>
 
-  <!-- ===================== APP (HIDDEN UNTIL UNLOCK) ===================== -->
-  <div id="app" style="display:none;">
-    <header>
-      <h1>Quote Calculator</h1>
-      <p>All prices include labour, materials and markups unless specified otherwise</p>
-    </header>
+<!-- ================= CALCULATOR APP ================= -->
+<div id="app" style="display:none;">
 
-    <div class="wrap">
-      <div class="grid">
-        <div class="card">
+<header>
+  <h1>Quote Calculator</h1>
+  <p>All prices include labour, materials and markups unless specified otherwise</p>
+</header>
 
-          <fieldset>
-            <legend>Job basics</legend>
-            <div class="row">
-              <div>
-                <label for="storeys">Storey</label>
-                <select id="storeys">
-                  <option value="single" selected>Single story</option>
-                  <option value="double">Double story</option>
-                </select>
-              </div>
-              <div>
-                <label for="twoDay">Job length</label>
-                <select id="twoDay">
-                  <option value="no" selected>Standard</option>
-                  <option value="yes">2 Day likely job</option>
-                </select>
-              </div>
-            </div>
+<div class="wrap">
+  <div class="grid">
 
-            <label for="accessAllowance">Difficult access allowance ($)</label>
-            <input type="number" id="accessAllowance" value="0" min="0" step="1" />
-          </fieldset>
-
-          <fieldset>
-            <legend>Gutters</legend>
-
-            <label for="lengthM">Gutter length (metres)</label>
-            <input type="number" id="lengthM" value="0" min="0" step="1" />
-            <div class="muted">Whole metres only</div>
-
-            <div class="row">
-              <div>
-                <label for="corners">Corners</label>
-                <input type="number" id="corners" value="0" min="0" step="1" />
-              </div>
-              <div>
-                <label for="rakes">Rakes</label>
-                <input type="number" id="rakes" value="0" min="0" step="1" />
-              </div>
-            </div>
-
-            <label for="guardsLengthM">Gutter guard length (metres)</label>
-            <input type="number" id="guardsLengthM" value="0" min="0" step="10" />
-            <div class="muted">Charged per 10 metres (rounded to nearest 10m)</div>
-          </fieldset>
-
-          <fieldset>
-            <legend>Downpipes</legend>
-            <div class="row">
-              <div>
-                <label for="downpipeType">Type</label>
-                <select id="downpipeType">
-                  <option value="pvc">PVC</option>
-                  <option value="metal">Metal</option>
-                </select>
-              </div>
-              <div>
-                <label for="downpipes">Quantity</label>
-                <input type="number" id="downpipes" value="0" min="0" step="1" />
-              </div>
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend>Access equipment</legend>
-            <div class="inline">
-              <input type="checkbox" id="scaffolding" />
-              <label for="scaffolding" style="margin:0">Scaffolding</label>
-            </div>
-
-            <div class="inline" style="margin-left:20px">
-              <input type="checkbox" id="difficultScaffolding" />
-              <label for="difficultScaffolding" style="margin:0">Difficult scaffolding (x1.5)</label>
-            </div>
-
-            <div class="inline">
-              <input type="checkbox" id="boom" />
-              <label for="boom" style="margin:0">Boom lift</label>
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend>Options</legend>
-            <div class="inline">
-              <input type="checkbox" id="tileRoof" />
-              <label for="tileRoof" style="margin:0">Tile roof (x1.25 gutters, corners, rakes & gutter guard)</label>
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend>GST</legend>
-            <div class="inline">
-              <input type="checkbox" id="excludeGST" />
-              <label for="excludeGST" style="margin:0">Exclude GST (ex GST)</label>
-            </div>
-            <div class="muted">All values will be divided by 1.1.</div>
-          </fieldset>
-
-          <div class="muted">Tip: change values and it will auto-recalculate.</div>
-        </div>
-
-        <div class="card summary">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-            <h2 style="margin:0">Estimate</h2>
-            <img src="Logo.png" alt="Logo" style="max-height:48px" />
+    <div class="card">
+      <fieldset>
+        <legend>Job basics</legend>
+        <div class="row">
+          <div>
+            <label for="storeys">Storey</label>
+            <select id="storeys">
+              <option value="single">Single</option>
+              <option value="double">Double</option>
+            </select>
           </div>
-          <div id="topPills" style="text-align:center"></div>
-          <table id="breakdown" aria-label="Breakdown"></table>
+          <div>
+            <label for="twoDay">Job length</label>
+            <select id="twoDay">
+              <option value="no">Standard</option>
+              <option value="yes">2 Day likely job</option>
+            </select>
+          </div>
         </div>
-      </div>
+
+        <label>Difficult access allowance ($)</label>
+        <input id="accessAllowance" type="number" value="0" min="0" />
+      </fieldset>
+
+      <fieldset>
+        <legend>Gutters</legend>
+        <label>Gutter length (m)</label>
+        <input id="lengthM" type="number" value="0" min="0" step="1" />
+
+        <div class="row">
+          <div>
+            <label>Corners</label>
+            <input id="corners" type="number" value="0" min="0" />
+          </div>
+          <div>
+            <label>Rakes</label>
+            <input id="rakes" type="number" value="0" min="0" />
+          </div>
+        </div>
+
+        <label>Gutter guard length (m)</label>
+        <input id="guardsLengthM" type="number" value="0" min="0" step="10" />
+        <div class="muted">Charged per 10 metres</div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Options</legend>
+        <div class="inline">
+          <input type="checkbox" id="tileRoof" />
+          <label>Tile roof (x1.25 gutters, corners, rakes & guards)</label>
+        </div>
+        <div class="inline">
+          <input type="checkbox" id="excludeGST" />
+          <label>Exclude GST (ex GST)</label>
+        </div>
+      </fieldset>
     </div>
+
+    <div class="card summary">
+      <h2>Estimate</h2>
+      <div id="topPills"></div>
+      <table id="breakdown"></table>
+    </div>
+
   </div>
+</div>
+</div>
 
-  <script>
-    /***************
-     * PASSCODE GATE
-     ***************/
-    const CORRECT_PASSCODE = "8008"; // change this
-    const UNLOCK_KEY = "gutter_calc_unlock_until";
+<script>
+/* ========= PASSCODE ========= */
+const CORRECT_PASSCODE = "8008";
 
-    function nowMs(){ return Date.now(); }
+document.getElementById("unlockBtn").addEventListener("click", unlock);
+document.getElementById("passcode").addEventListener("keydown", e => {
+  if(e.key === "Enter") unlock();
+});
 
-    function isUnlocked(){
-      const until = Number(localStorage.getItem(UNLOCK_KEY) || "0");
-      return until > nowMs();
-    }
+function unlock(){
+  const entered = document.getElementById("passcode").value;
+  if(entered === CORRECT_PASSCODE){
+    document.getElementById("lockScreen").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    initCalculator();
+  } else {
+    document.getElementById("lockError").style.display = "block";
+  }
+}
 
-    function showApp(){
-      document.getElementById("lockScreen").style.display = "none";
-      document.getElementById("app").style.display = "block";
-      initCalculator(); // only initialize after unlock
-    }
+/* ========= CALCULATOR ========= */
+function money(n){
+  return Number(n||0).toLocaleString("en-AU",{style:"currency",currency:"AUD"});
+}
+function round10(n){ return Math.round(n/10)*10; }
 
-    function tryUnlock(){
-      const entered = document.getElementById("passcode").value;
-      const remember = document.getElementById("remember").checked;
-      const err = document.getElementById("lockError");
+const PRICING = {
+  gutters:{single:300,double:350},
+  corner:250,
+  rake:350,
+  guard:{single:1250,double:1500},
+  tile:1.25,
+  day2:500,
+  gst:1.1
+};
 
-      if(entered === CORRECT_PASSCODE){
-        err.style.display = "none";
-        if(remember){
-          // 7 days
-          localStorage.setItem(UNLOCK_KEY, String(nowMs() + 7*24*60*60*1000));
-        } else {
-          // session-only (expires when tab closes)
-          sessionStorage.setItem("gutter_calc_unlocked", "1");
-        }
-        showApp();
-      } else {
-        err.style.display = "block";
-      }
-    }
+function initCalculator(){
+  document.querySelectorAll("#app input, #app select").forEach(el=>{
+    el.addEventListener("input", calc);
+  });
+  calc();
+}
 
-    // auto-unlock rules:
-    if (isUnlocked() || sessionStorage.getItem("gutter_calc_unlocked") === "1") {
-      showApp();
-    } else {
-      document.getElementById("unlockBtn").addEventListener("click", tryUnlock);
-      document.getElementById("passcode").addEventListener("keydown", (e)=> {
-        if(e.key === "Enter") tryUnlock();
-      });
-    }
+function calc(){
+  const s = storeys.value;
+  const tile = tileRoof.checked ? PRICING.tile : 1;
+  const gst = excludeGST.checked ? 1/PRICING.gst : 1;
 
-    /*********************
-     * CALCULATOR (ONLY RUNS AFTER UNLOCK)
-     *********************/
-    function money(n){
-      return Number(n||0).toLocaleString("en-AU",{style:"currency",currency:"AUD"});
-    }
-    function roundTo10(n){
-      return Math.round(n / 10) * 10;
-    }
+  guardsLengthM.value = round10(+guardsLengthM.value||0);
 
-    const PRICING = {
-      guttersPerM: { single: 300, double: 350 },
-      cornerEach: 250,
-      rakeEach: 350,
-      guardPer10M: { single: 1250, double: 1500 },
-      downpipeEach: {
-        pvc: { single: 450, double: 650 },
-        metal: { single: 650, double: 850 }
-      },
-      scaffoldingDefault: 4000,
-      difficultScaffoldingMultiplier: 1.5,
-      boomTravel: 1200,
-      boomPerDay: 300,
-      tileMultiplier: 1.25,
-      secondDaySetup: 500,
-      gstDivisor: 1.1
-    };
+  const lines = [];
+  const add=(l,c)=>{ if(c>0) lines.push({l,c:c*gst}); };
 
-    function initCalculator(){
-      const els = {
-        storeys: document.getElementById("storeys"),
-        twoDay: document.getElementById("twoDay"),
-        accessAllowance: document.getElementById("accessAllowance"),
-        lengthM: document.getElementById("lengthM"),
-        corners: document.getElementById("corners"),
-        rakes: document.getElementById("rakes"),
-        guardsLengthM: document.getElementById("guardsLengthM"),
-        downpipeType: document.getElementById("downpipeType"),
-        downpipes: document.getElementById("downpipes"),
-        scaffolding: document.getElementById("scaffolding"),
-        difficultScaffolding: document.getElementById("difficultScaffolding"),
-        boom: document.getElementById("boom"),
-        tileRoof: document.getElementById("tileRoof"),
-        excludeGST: document.getElementById("excludeGST"),
-        topPills: document.getElementById("topPills"),
-        breakdown: document.getElementById("breakdown"),
-      };
+  add("Gutters", lengthM.value*PRICING.gutters[s]*tile);
+  add("Corners", corners.value*PRICING.corner*tile);
+  add("Rakes", rakes.value*PRICING.rake*tile);
+  add("Gutter guard", (guardsLengthM.value/10)*PRICING.guard[s]*tile);
+  add("Access allowance", accessAllowance.value);
+  if(twoDay.value==="yes") add("2nd day setup", PRICING.day2);
 
-      function calc(){
-        const storeys = els.storeys.value;
-        const twoDay = els.twoDay.value === "yes";
-        const tileRoof = els.tileRoof.checked;
-        const excludeGST = els.excludeGST.checked;
+  const total = lines.reduce((a,b)=>a+b.c,0);
 
-        const gstFactor = excludeGST ? 1 / PRICING.gstDivisor : 1;
-        const tileFactor = tileRoof ? PRICING.tileMultiplier : 1;
+  topPills.innerHTML = `<div class="pill">Total: <strong>${money(total)}</strong></div>`;
+  breakdown.innerHTML = `
+    <tr><th>Item</th><th class="right">Price</th></tr>
+    ${lines.map(x=>`<tr><td>${x.l}</td><td class="right">${money(x.c)}</td></tr>`).join("")}
+    <tr><td><strong>Total</strong></td><td class="right"><strong>${money(total)}</strong></td></tr>`;
+}
+</script>
 
-        // force guard length to nearest 10m
-        const guardsM = roundTo10(Math.max(0, Number(els.guardsLengthM.value || 0)));
-        els.guardsLengthM.value = guardsM;
-
-        const lengthM = Math.max(0, Math.round(Number(els.lengthM.value || 0))); // whole metres
-        els.lengthM.value = lengthM;
-
-        const corners = Math.max(0, Math.round(Number(els.corners.value || 0)));
-        const rakes = Math.max(0, Math.round(Number(els.rakes.value || 0)));
-        const downpipes = Math.max(0, Math.round(Number(els.downpipes.value || 0)));
-
-        const accessAllowance = Math.max(0, Number(els.accessAllowance.value || 0));
-
-        const lines = [];
-        const add = (label, costIncGST) => {
-          const cost = costIncGST * gstFactor;
-          if(cost > 0) lines.push({label, cost});
-        };
-
-        // Tile roof affects gutters + corners + rakes + gutter guard
-        add("Gutters", (lengthM * PRICING.guttersPerM[storeys]) * tileFactor);
-        add("Corners", (corners * PRICING.cornerEach) * tileFactor);
-        add("Rakes", (rakes * PRICING.rakeEach) * tileFactor);
-
-        const guardBlocks = guardsM / 10;
-        add("Gutter guard", (guardBlocks * PRICING.guardPer10M[storeys]) * tileFactor);
-
-        // Downpipes NOT affected by tile
-        const dpRate = PRICING.downpipeEach[els.downpipeType.value][storeys];
-        add("Downpipes", downpipes * dpRate);
-
-        add("Difficult access allowance", accessAllowance);
-
-        if(twoDay) add("2nd day setup time", PRICING.secondDaySetup);
-
-        if(els.scaffolding.checked){
-          let s = PRICING.scaffoldingDefault;
-          if(els.difficultScaffolding.checked) s *= PRICING.difficultScaffoldingMultiplier;
-          add("Scaffolding", s);
-        } else {
-          els.difficultScaffolding.checked = false;
-        }
-        els.difficultScaffolding.disabled = !els.scaffolding.checked;
-
-        if(els.boom.checked){
-          add("Boom lift", PRICING.boomTravel + (PRICING.boomPerDay * (twoDay ? 2 : 1)));
-        }
-
-        const total = lines.reduce((sum, l)=>sum + l.cost, 0);
-
-        els.topPills.innerHTML = `
-          <div class="pill">Total (${excludeGST ? "ex" : "inc"} GST): <strong>${money(total)}</strong></div>
-        `;
-
-        els.breakdown.innerHTML = `
-          <thead><tr><th>Item</th><th class="right">Price (${excludeGST ? "ex" : "inc"} GST)</th></tr></thead>
-          <tbody>
-            ${lines.map(l=>`<tr><td>${l.label}</td><td class="right">${money(l.cost)}</td></tr>`).join("")}
-            <tr><td><strong>Total</strong></td><td class="right"><strong>${money(total)}</strong></td></tr>
-          </tbody>
-        `;
-      }
-
-      document.querySelectorAll("#app input, #app select").forEach(el=>{
-        el.addEventListener("input", calc);
-        el.addEventListener("change", calc);
-      });
-
-      calc();
-    }
-  </script>
 </body>
 </html>
