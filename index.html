@@ -3,535 +3,390 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Gutter & Gutter Guard Quote Calculator</title>
+  <title>Gutter Quote Calculator</title>
   <style>
     :root{
-      --brand:#ec008c; /* magenta */
-      --accent:#007bff; /* blue */
-      --bg:#ffe100; /* yellow */
+      --brand:#ec008c;
+      --bg:#ffe100;
       --card:#fff;
-      --text:#333;
+      --text:#222;
+      --muted:#666;
+      --blue:#007bff;
+      --red:#dc2626;
     }
     *{box-sizing:border-box}
     body{font-family:Arial,Helvetica,sans-serif;margin:0;background:var(--bg);color:var(--text)}
-    header{padding:24px 16px;text-align:center}
-    h1{color:var(--brand);margin:0 0 8px}
-    p.sub{margin:0;color:#555}
+    header{padding:22px 16px;text-align:center}
+    h1{margin:0 0 6px;color:var(--brand)}
+    p{margin:0;color:var(--muted)}
 
     .wrap{max-width:980px;margin:16px auto;padding:16px}
-    .card{background:var(--card);border-radius:20px;box-shadow:0 2px 10px rgba(0,0,0,.1);padding:16px}
-
     .grid{display:grid;grid-template-columns:1fr;gap:16px}
     @media(min-width:900px){.grid{grid-template-columns:1.1fr .9fr}}
-
-    fieldset{border:1px solid #eee;border-radius:12px;padding:12px}
-    legend{padding:0 8px;color:#666}
-    label{display:block;font-weight:600;margin:10px 0 6px}
-    input[type="number"], select{width:100%;padding:10px;border:1px solid #ccc;border-radius:8px;font-size:15px}
+    .card{background:var(--card);border-radius:18px;box-shadow:0 2px 10px rgba(0,0,0,.12);padding:16px}
+    fieldset{border:1px solid #eee;border-radius:12px;padding:12px;margin:0 0 12px}
+    legend{padding:0 8px;color:#555}
+    label{display:block;font-weight:700;margin:10px 0 6px}
+    input[type="number"], input[type="password"], select{
+      width:100%;padding:10px;border:1px solid #ccc;border-radius:10px;font-size:15px
+    }
     .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-    .muted{color:#666;font-size:12px}
-    .inline{display:flex;align-items:center;gap:8px}
-
-    .summary{ text-align:center }
-    .summary h2{color:var(--brand)}
-    .summary .pill{display:inline-block;background:#f5f5f5;border-radius:999px;padding:6px 12px;margin:4px 6px}
-    .breakdown{width:100%;border-collapse:collapse;margin-top:8px}
-    .breakdown th,.breakdown td{padding:8px;border-bottom:1px solid #eee;text-align:left}
+    .inline{display:flex;align-items:center;gap:10px;margin-top:8px}
+    .muted{font-size:12px;color:var(--muted)}
+    .summary h2{margin:0 0 6px;color:var(--brand);text-align:center}
+    .pill{display:inline-block;background:#f4f4f4;border-radius:999px;padding:7px 12px;margin:6px 6px}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
     .right{text-align:right}
 
-    .cta{background:var(--accent);color:#fff;border:0;border-radius:10px;padding:12px 16px;font-size:16px;cursor:pointer;width:100%}
-    .cta:hover{background:#0056b3}
-    .ok{color:#16a34a;font-weight:700}
-    .warn{color:#b45309;font-weight:700}
-    .bad{color:#dc2626;font-weight:700}
-
-    .footer-note{color:#777;text-align:center;font-size:12px;margin-top:8px}
-    .brandbar{display:flex;justify-content:space-between;align-items:center;gap:12px}
-    .brandbar img{max-height:56px}
-
-    .tests{margin-top:16px;text-align:left;display:none}
-    .tests pre{background:#0b1021;color:#e2e8f0;padding:12px;border-radius:8px;overflow:auto;max-height:260px}
+    /* Lock screen */
+    .lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+    .lock-card{
+      width:min(520px, 100%);
+      background:#fff;border-radius:22px;box-shadow:0 2px 12px rgba(0,0,0,.15);
+      padding:18px;
+      text-align:center;
+    }
+    .lock-top{
+      display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .lock-logo{max-height:56px;max-width:180px}
+    .btn{
+      width:100%;border:0;border-radius:12px;padding:12px 14px;
+      background:var(--blue);color:#fff;font-size:16px;font-weight:700;cursor:pointer
+    }
+    .btn:hover{background:#0056b3}
+    .err{color:var(--red);font-weight:700;margin-top:10px;display:none}
   </style>
 </head>
+
 <body>
-
-<script>
-// ===== SIMPLE ACCESS GATE (optional) =====
-const requirePassword = false; // set to true to enable prompt
-const correctPassword = "8008";
-if(requirePassword){
-  const entered = prompt("Please enter the password:");
-  if(entered !== correctPassword){
-    document.body.innerHTML = "<p style='padding:24px'>Access denied. Incorrect password.</p>";
-  }
-}
-</script>
-
-<header>
-  <h1>Quote Calculator</h1>
-  <p class="sub">Gutters & Gutter Guards — labour-hours model with fixed productivities</p>
-</header>
-
-<div class="wrap">
-  <div class="grid">
-    <!-- ================= LEFT: FORM ================= -->
-    <div class="card">
-      <div class="brandbar">
-        <h3 style="margin:0;color:#222">Job Inputs</h3>
-        <img src="Logo.png" alt="Logo" />
+  <!-- ===================== LOCK SCREEN ===================== -->
+  <div id="lockScreen" class="lock-wrap">
+    <div class="lock-card">
+      <div class="lock-top">
+        <img class="lock-logo" src="Logo.png" alt="Logo" />
+        <div>
+          <h2 style="margin:0;color:var(--brand)">Restricted Access</h2>
+          <div class="muted" style="margin-top:6px">Enter passcode to load the calculator</div>
+        </div>
       </div>
 
-      <fieldset>
-        <legend>Measurements</legend>
-        <div class="row">
-          <div>
-            <label for="lengthM">Total gutter length (m)</label>
-            <input type="number" id="lengthM" min="0" step="0.1" value="40" />
-          </div>
-          <div>
-            <label for="downpipes">Downpipes (qty)</label>
-            <input type="number" id="downpipes" min="0" step="1" value="0" />
-          </div>
-        </div>
-      </fieldset>
+      <label for="passcode" style="text-align:left;margin-top:12px">Passcode</label>
+      <input id="passcode" type="password" placeholder="Enter passcode" autocomplete="current-password" />
 
-      <fieldset>
-        <legend>Materials</legend>
-        <div class="row">
-          <div>
-            <label for="gutterType">Gutter type</label>
-            <select id="gutterType">
-              <option value="colorbond">Standard Colorbond / Zincalume</option>
-              <option value="premium">Premium finish / Copper</option>
-              <option value="box">Box gutter (custom)</option>
-              <option value="none">None (guards only)</option>
-            </select>
-          </div>
-          <div>
-            <label for="guardType">Gutter guard</label>
-            <select id="guardType">
-              <option value="none">None</option>
-              <option value="plastic">Plastic mesh (basic)</option>
-              <option value="aluminium">Aluminium mesh (standard)</option>
-              <option value="steel">Steel / ember-rated mesh</option>
-              <option value="foam">Foam inserts</option>
-            </select>
-          </div>
-        </div>
-        <div class="row">
-          <div>
-            <label for="downpipeType">Downpipe type</label>
-            <select id="downpipeType">
-              <option value="standard">Standard Colorbond / Zincalume</option>
-              <option value="premium">Premium colours / materials</option>
-            </select>
-          </div>
-          <div>
-            <label for="colourUpcharge">Premium colour upcharge ($ flat)</label>
-            <input type="number" id="colourUpcharge" min="0" step="1" value="0" />
-          </div>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend>Access & Site</legend>
-        <div class="row">
-          <div>
-            <label for="storeys">Storeys</label>
-            <select id="storeys">
-              <option value="single">Single</option>
-              <option value="double">Double</option>
-            </select>
-          </div>
-          <div>
-            <label for="pitch">Roof pitch</label>
-            <select id="pitch">
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="steep">Steep</option>
-            </select>
-          </div>
-        </div>
-        <div class="row-3">
-          <div class="inline">
-            <input type="checkbox" id="needRemoval" checked />
-            <label for="needRemoval">Remove & dispose old gutters/guards</label>
-          </div>
-          <div class="inline">
-            <input type="checkbox" id="needCleaning" />
-            <label for="needCleaning">Clean gutters before guard install</label>
-          </div>
-          <div class="inline">
-            <input type="checkbox" id="scaffolding" />
-            <label for="scaffolding">Scaffolding (per 10m)</label>
-          </div>
-        </div>
-        <div class="row-3">
-          <div class="inline">
-            <input type="checkbox" id="boom" />
-            <label for="boom">Boom lift (1 day)</label>
-          </div>
-          <div class="inline">
-            <input type="checkbox" id="travel" />
-            <label for="travel">Travel surcharge</label>
-          </div>
-          <div class="inline">
-            <input type="checkbox" id="urgent" />
-            <label for="urgent">Urgent / after-hours</label>
-          </div>
-        </div>
-        <div class="row-3">
-          <div class="inline">
-            <input type="checkbox" id="tiledRoof" />
-            <label for="tiledRoof">Tiled roof (x1.25)</label>
-          </div>
-          <div class="inline">
-            <input type="checkbox" id="skipBin" />
-            <label for="skipBin">Skip bin (per 10m)</label>
-          </div>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend>Business Settings</legend>
-        <div class="row">
-          <div>
-            <label for="crewCount">Crew size</label>
-            <select id="crewCount">
-              <option value="1">1 person</option>
-              <option value="2" selected>2 people</option>
-              <option value="3">3 people</option>
-            </select>
-            <div class="muted">Labour cost scales with crew-hours.</div>
-          </div>
-          <div>
-            <label for="allowLongDay" class="inline">
-              <input type="checkbox" id="allowLongDay" /> Allow single long day (≤10h per person)
-            </label>
-            <div class="muted">If ON and crew-hours ≤ (10 × crew), we plan it as 1 day.</div>
-          </div>
-        </div>
-        <div class="row">
-          <div style="display:none">
-            <label for="targetMargin">Target gross margin (%)</label>
-            <input type="number" id="targetMargin" min="0" max="95" step="1" value="70" disabled />
-            <div class="muted">Fixed at 70% for quoting.</div>
-          </div>
-          <div>
-            <label for="includeGST" class="inline">
-              <input type="checkbox" id="includeGST" checked /> Include 10% GST in totals
-            </label>
-          </div>
-        </div>
-      </fieldset>
-
-      <div class="row">
-        <button class="cta" id="calcBtn" type="button">Calculate</button>
+      <div class="inline" style="justify-content:flex-start">
+        <input id="remember" type="checkbox" />
+        <label for="remember" style="margin:0;font-weight:700">Remember for this browser (7 days)</label>
       </div>
-      <div class="footer-note">Prices are indicative. Adjust the config at top of script to match your supplier and labour rates.</div>
+
+      <button id="unlockBtn" class="btn" type="button">Unlock</button>
+      <div id="lockError" class="err">Incorrect passcode.</div>
     </div>
+  </div>
 
-    <!-- ================= RIGHT: RESULTS ================= -->
-    <div class="card summary">
-      <h2>Estimate</h2>
-      <div id="estSummary"></div>
-      <table class="breakdown" id="breakdownTbl" aria-label="Cost breakdown"></table>
-      <div id="marginMsg" style="margin-top:8px"></div>
-      <h3 style="margin-top:16px;color:#222">Category totals</h3>
-      <table class="breakdown" id="categoryTbl" aria-label="Category breakdown"></table>
+  <!-- ===================== APP (HIDDEN UNTIL UNLOCK) ===================== -->
+  <div id="app" style="display:none;">
+    <header>
+      <h1>Quote Calculator</h1>
+      <p>All prices include labour, materials and markups unless specified otherwise</p>
+    </header>
 
-      <div class="tests" id="tests">
-        <h3 style="color:#222;margin-top:16px">Self-tests</h3>
-        <pre id="testOutput"></pre>
+    <div class="wrap">
+      <div class="grid">
+        <div class="card">
+
+          <fieldset>
+            <legend>Job basics</legend>
+            <div class="row">
+              <div>
+                <label for="storeys">Storey</label>
+                <select id="storeys">
+                  <option value="single" selected>Single story</option>
+                  <option value="double">Double story</option>
+                </select>
+              </div>
+              <div>
+                <label for="twoDay">Job length</label>
+                <select id="twoDay">
+                  <option value="no" selected>Standard</option>
+                  <option value="yes">2 Day likely job</option>
+                </select>
+              </div>
+            </div>
+
+            <label for="accessAllowance">Difficult access allowance ($)</label>
+            <input type="number" id="accessAllowance" value="0" min="0" step="1" />
+          </fieldset>
+
+          <fieldset>
+            <legend>Gutters</legend>
+
+            <label for="lengthM">Gutter length (metres)</label>
+            <input type="number" id="lengthM" value="0" min="0" step="1" />
+            <div class="muted">Whole metres only</div>
+
+            <div class="row">
+              <div>
+                <label for="corners">Corners</label>
+                <input type="number" id="corners" value="0" min="0" step="1" />
+              </div>
+              <div>
+                <label for="rakes">Rakes</label>
+                <input type="number" id="rakes" value="0" min="0" step="1" />
+              </div>
+            </div>
+
+            <label for="guardsLengthM">Gutter guard length (metres)</label>
+            <input type="number" id="guardsLengthM" value="0" min="0" step="10" />
+            <div class="muted">Charged per 10 metres (rounded to nearest 10m)</div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Downpipes</legend>
+            <div class="row">
+              <div>
+                <label for="downpipeType">Type</label>
+                <select id="downpipeType">
+                  <option value="pvc">PVC</option>
+                  <option value="metal">Metal</option>
+                </select>
+              </div>
+              <div>
+                <label for="downpipes">Quantity</label>
+                <input type="number" id="downpipes" value="0" min="0" step="1" />
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Access equipment</legend>
+            <div class="inline">
+              <input type="checkbox" id="scaffolding" />
+              <label for="scaffolding" style="margin:0">Scaffolding</label>
+            </div>
+
+            <div class="inline" style="margin-left:20px">
+              <input type="checkbox" id="difficultScaffolding" />
+              <label for="difficultScaffolding" style="margin:0">Difficult scaffolding (x1.5)</label>
+            </div>
+
+            <div class="inline">
+              <input type="checkbox" id="boom" />
+              <label for="boom" style="margin:0">Boom lift</label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Options</legend>
+            <div class="inline">
+              <input type="checkbox" id="tileRoof" />
+              <label for="tileRoof" style="margin:0">Tile roof (x1.25 gutters, corners, rakes & gutter guard)</label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>GST</legend>
+            <div class="inline">
+              <input type="checkbox" id="excludeGST" />
+              <label for="excludeGST" style="margin:0">Exclude GST (ex GST)</label>
+            </div>
+            <div class="muted">All values will be divided by 1.1.</div>
+          </fieldset>
+
+          <div class="muted">Tip: change values and it will auto-recalculate.</div>
+        </div>
+
+        <div class="card summary">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+            <h2 style="margin:0">Estimate</h2>
+            <img src="Logo.png" alt="Logo" style="max-height:48px" />
+          </div>
+          <div id="topPills" style="text-align:center"></div>
+          <table id="breakdown" aria-label="Breakdown"></table>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<script>
-/****************************************************
- * CONFIG: tune these to your business.
- ****************************************************/
-const RATES = {
-  // Site & multiplier settings, and hire/equipment rates
-  accessMultiplier: { single: 1.0, double: 1.25 },
-  tiledRoofMultiplier: 1.25,
-  urgentMultiplier: 1.25,
-  scaffoldingPer10m: 300,
-  skipBinPer10m: 80,
-  boomPerDay: 300,
-  travelFlat: 100
-};
+  <script>
+    /***************
+     * PASSCODE GATE
+     ***************/
+    const CORRECT_PASSCODE = "8008"; // change this
+    const UNLOCK_KEY = "gutter_calc_unlock_until";
 
-// Productivity assumptions (hours)
-const PRODUCTIVITY = {
-  setupBaseHours: 1.0,           // fixed setup + clean-up
-  setupPer10mHours: 0.25,        // extra every 10m of run
-  gutterHoursPerM: 0.12,         // install gutters
-  guardHoursPerM: 0.08,          // install guards
-  downpipeHoursEach: 0.50,       // fit/replace downpipe
-  removalHoursPerM: 0.05,        // remove & dispose old
-  cleaningHoursPerM: 0.04,       // clean gutters prior to guard
-  // Access & pitch impacts as hour multipliers/adders
-  storeyMultiplier: { single: 1.0, double: 1.15 },
-  pitchExtraHoursPerM: { low: 0.00, medium: 0.04, steep: 0.08 }
-};
+    function nowMs(){ return Date.now(); }
 
-// Material/consumable budget assumptions (AUD)
-const MATERIALS = {
-  gutterPerM: { colorbond: 22, premium: 60, box: 80, none: 0 },
-  guardPerM:  { none: 0, plastic: 8, aluminium: 20, steel: 35, foam: 12 },
-  downpipeEach: { standard: 55, premium: 95 },
-  disposalPerM: 3,               // tip fees, bags, etc.
-  cleaningConsumablesPerM: 1.5   // brushes, sealants share, etc.
-};
+    function isUnlocked(){
+      const until = Number(localStorage.getItem(UNLOCK_KEY) || "0");
+      return until > nowMs();
+    }
 
-const LABOUR_RATE = 214.5; // $/hr
+    function showApp(){
+      document.getElementById("lockScreen").style.display = "none";
+      document.getElementById("app").style.display = "block";
+      initCalculator(); // only initialize after unlock
+    }
 
-function money(n){return Number(n||0).toLocaleString('en-AU',{style:'currency',currency:'AUD'})}
+    function tryUnlock(){
+      const entered = document.getElementById("passcode").value;
+      const remember = document.getElementById("remember").checked;
+      const err = document.getElementById("lockError");
 
-function calcEstimate(){
-  const lengthM = +document.getElementById('lengthM').value || 0;
-  const downpipes = +document.getElementById('downpipes').value || 0;
-  const gutterType = document.getElementById('gutterType').value;
-  const guardType = document.getElementById('guardType').value;
-  const downpipeType = document.getElementById('downpipeType').value;
-  const colourUpcharge = +document.getElementById('colourUpcharge').value || 0;
-  const storeys = document.getElementById('storeys').value;
-  const pitch = document.getElementById('pitch').value;
-  const needRemoval = document.getElementById('needRemoval').checked;
-  const needCleaning = document.getElementById('needCleaning').checked;
-  const scaffolding = document.getElementById('scaffolding').checked;
-  const boom = document.getElementById('boom').checked;
-  const travel = document.getElementById('travel').checked;
-  const urgent = document.getElementById('urgent').checked;
-  const tiledRoof = document.getElementById('tiledRoof').checked;
-  const skipBin = document.getElementById('skipBin').checked;
-  const targetMarginPct = 70; // fixed gross margin %
-  const includeGST = document.getElementById('includeGST').checked;
+      if(entered === CORRECT_PASSCODE){
+        err.style.display = "none";
+        if(remember){
+          // 7 days
+          localStorage.setItem(UNLOCK_KEY, String(nowMs() + 7*24*60*60*1000));
+        } else {
+          // session-only (expires when tab closes)
+          sessionStorage.setItem("gutter_calc_unlocked", "1");
+        }
+        showApp();
+      } else {
+        err.style.display = "block";
+      }
+    }
 
-  // Category accumulators and line collector
-  const totals = { labour:0, materials:0, hire:0, other:0 };
-  const lines = [];
-  function addLine(label, qty, cost){ lines.push({label, qty, cost}); return cost; }
+    // auto-unlock rules:
+    if (isUnlocked() || sessionStorage.getItem("gutter_calc_unlocked") === "1") {
+      showApp();
+    } else {
+      document.getElementById("unlockBtn").addEventListener("click", tryUnlock);
+      document.getElementById("passcode").addEventListener("keydown", (e)=> {
+        if(e.key === "Enter") tryUnlock();
+      });
+    }
 
-  // ===== Labour hours model =====
-  const segments10 = Math.ceil(lengthM/10);
-  let singleTechHours = PRODUCTIVITY.setupBaseHours + PRODUCTIVITY.setupPer10mHours * Math.max(0, segments10);
+    /*********************
+     * CALCULATOR (ONLY RUNS AFTER UNLOCK)
+     *********************/
+    function money(n){
+      return Number(n||0).toLocaleString("en-AU",{style:"currency",currency:"AUD"});
+    }
+    function roundTo10(n){
+      return Math.round(n / 10) * 10;
+    }
 
-  if(gutterType !== 'none') singleTechHours += lengthM * PRODUCTIVITY.gutterHoursPerM;
-  if(guardType !== 'none')  singleTechHours += lengthM * PRODUCTIVITY.guardHoursPerM;
-  if(downpipes > 0)         singleTechHours += downpipes * PRODUCTIVITY.downpipeHoursEach;
-  if(needRemoval)           singleTechHours += lengthM * PRODUCTIVITY.removalHoursPerM;
-  if(needCleaning && guardType !== 'none') singleTechHours += lengthM * PRODUCTIVITY.cleaningHoursPerM;
+    const PRICING = {
+      guttersPerM: { single: 300, double: 350 },
+      cornerEach: 250,
+      rakeEach: 350,
+      guardPer10M: { single: 1250, double: 1500 },
+      downpipeEach: {
+        pvc: { single: 450, double: 650 },
+        metal: { single: 650, double: 850 }
+      },
+      scaffoldingDefault: 4000,
+      difficultScaffoldingMultiplier: 1.5,
+      boomTravel: 1200,
+      boomPerDay: 300,
+      tileMultiplier: 1.25,
+      secondDaySetup: 500,
+      gstDivisor: 1.1
+    };
 
-  // Access adjustments (still expressed as single-tech hours)
-  singleTechHours *= (PRODUCTIVITY.storeyMultiplier[storeys] || 1.0);
-  singleTechHours += (PRODUCTIVITY.pitchExtraHoursPerM[pitch] || 0) * lengthM;
+    function initCalculator(){
+      const els = {
+        storeys: document.getElementById("storeys"),
+        twoDay: document.getElementById("twoDay"),
+        accessAllowance: document.getElementById("accessAllowance"),
+        lengthM: document.getElementById("lengthM"),
+        corners: document.getElementById("corners"),
+        rakes: document.getElementById("rakes"),
+        guardsLengthM: document.getElementById("guardsLengthM"),
+        downpipeType: document.getElementById("downpipeType"),
+        downpipes: document.getElementById("downpipes"),
+        scaffolding: document.getElementById("scaffolding"),
+        difficultScaffolding: document.getElementById("difficultScaffolding"),
+        boom: document.getElementById("boom"),
+        tileRoof: document.getElementById("tileRoof"),
+        excludeGST: document.getElementById("excludeGST"),
+        topPills: document.getElementById("topPills"),
+        breakdown: document.getElementById("breakdown"),
+      };
 
-  // Crew and day planning (hours are fixed as two-person equivalent)
-  const crewCount = Math.max(1, +document.getElementById('crewCount').value || 1);
-  const allowLongDay = document.getElementById('allowLongDay').checked;
-  const requiredHours = singleTechHours * 2; // two-person requirement (fixed)
-  const perPersonHours = requiredHours / crewCount;
-  const stdDayPerPerson = 8;
-  const longDayPerPerson = 10;
-  let plannedDays = Math.ceil(perPersonHours / stdDayPerPerson);
-  if(allowLongDay && perPersonHours > stdDayPerPerson && perPersonHours <= longDayPerPerson){ plannedDays = 1; }
+      function calc(){
+        const storeys = els.storeys.value;
+        const twoDay = els.twoDay.value === "yes";
+        const tileRoof = els.tileRoof.checked;
+        const excludeGST = els.excludeGST.checked;
 
-  // Labour cost uses required hours (rate is per person-hour)
-  let labourCost = requiredHours * LABOUR_RATE;
-  totals.labour += labourCost;
-  addLine(`Labour (${requiredHours.toFixed(2)} hrs @ ${money(LABOUR_RATE)}/hr)`, `${crewCount} person team`, labourCost);
+        const gstFactor = excludeGST ? 1 / PRICING.gstDivisor : 1;
+        const tileFactor = tileRoof ? PRICING.tileMultiplier : 1;
 
-  // ===== Materials =====
-  let materialsCost = 0;
-  if(gutterType !== 'none'){ const v = lengthM * (MATERIALS.gutterPerM[gutterType]||0); if(v>0){ materialsCost += v; addLine(`Materials – Gutters (${gutterType})`, `${lengthM.toFixed(1)} m`, v); } }
-  if(guardType !== 'none'){  const v = lengthM * (MATERIALS.guardPerM[guardType]||0);   if(v>0){ materialsCost += v; addLine(`Materials – Guards (${guardType})`, `${lengthM.toFixed(1)} m`, v); } }
-  if(downpipes>0){ const v = downpipes * (MATERIALS.downpipeEach[downpipeType]||0); if(v>0){ materialsCost += v; addLine(`Materials – Downpipes (${downpipeType})`, `${downpipes} ea`, v); } }
-  if(needRemoval){ const v = (MATERIALS.disposalPerM||0) * lengthM; if(v>0){ materialsCost += v; addLine(`Disposal fees`, `${lengthM.toFixed(1)} m`, v); } }
-  if(needCleaning && guardType !== 'none'){ const v = (MATERIALS.cleaningConsumablesPerM||0) * lengthM; if(v>0){ materialsCost += v; addLine(`Cleaning consumables`, `${lengthM.toFixed(1)} m`, v); } }
-  if(colourUpcharge>0){ materialsCost += colourUpcharge; addLine(`Premium colour upcharge`, `1`, colourUpcharge); }
-  totals.materials += materialsCost;
+        // force guard length to nearest 10m
+        const guardsM = roundTo10(Math.max(0, Number(els.guardsLengthM.value || 0)));
+        els.guardsLengthM.value = guardsM;
 
-  // ===== Hire equipment =====
-  if(scaffolding && segments10>0){ const c = RATES.scaffoldingPer10m * segments10; totals.hire += c; addLine(`Scaffolding (per 10m)`, `${segments10} x 10m`, c); }
-  if(boom){ const c = RATES.boomPerDay; totals.hire += c; addLine(`Boom lift (1 day)`, `1`, c); }
-  if(skipBin && segments10>0){ const c = RATES.skipBinPer10m * segments10; totals.hire += c; addLine(`Skip bin (per 10m)`, `${segments10} x 10m`, c); }
-  if(travel){ const c = RATES.travelFlat; totals.other += c; addLine(`Travel surcharge`, `1`, c); }
+        const lengthM = Math.max(0, Math.round(Number(els.lengthM.value || 0))); // whole metres
+        els.lengthM.value = lengthM;
 
-  // ===== Uplifts (labour-only) =====
-  let baseForUplifts = labourCost;
-  if(tiledRoof && baseForUplifts>0){ const d = baseForUplifts * (RATES.tiledRoofMultiplier-1); totals.labour += d; addLine(`Tiled roof uplift (x${RATES.tiledRoofMultiplier.toFixed(2)})`, '', d); baseForUplifts *= RATES.tiledRoofMultiplier; }
-  if(urgent && baseForUplifts>0){ const d = baseForUplifts * (RATES.urgentMultiplier-1); totals.labour += d; addLine(`Urgency uplift (x${RATES.urgentMultiplier.toFixed(2)})`, '', d); baseForUplifts *= RATES.urgentMultiplier; }
+        const corners = Math.max(0, Math.round(Number(els.corners.value || 0)));
+        const rakes = Math.max(0, Math.round(Number(els.rakes.value || 0)));
+        const downpipes = Math.max(0, Math.round(Number(els.downpipes.value || 0)));
 
-  // ===== Totals & guidance =====
-  const exTotal = totals.labour + totals.materials + totals.hire + totals.other;
-  const gst = includeGST ? exTotal * 0.10 : 0;
-  const totalIncGST = exTotal + gst;
-  const targetSell = exTotal / (1 - 0.70); // 70% gross margin fixed
-  const low = targetSell * 0.95, high = targetSell * 1.10;
+        const accessAllowance = Math.max(0, Number(els.accessAllowance.value || 0));
 
-  const estSummary = document.getElementById('estSummary');
-  const sellInc = targetSell * 1.10; // show sell with GST when toggled on
-  const lowInc  = low * 1.10;
-  const highInc = high * 1.10;
-  const sellStr = includeGST ? `${money(sellInc)} inc GST` : `${money(targetSell)} ex GST`;
-  const lowStr  = includeGST ? `${money(lowInc)} inc GST` : `${money(low)} ex GST`;
-  const highStr = includeGST ? `${money(highInc)} inc GST` : `${money(high)} ex GST`;
-  estSummary.innerHTML = `
-    <div class="pill">Estimated cost: <strong>${includeGST? money(totalIncGST)+" inc GST" : money(exTotal)+" ex GST"}</strong></div>
-    <div class="pill">Target sell (~70% margin): <strong>${sellStr}</strong></div>
-    <div class="pill">Quote range: <strong>${lowStr}</strong> – <strong>${highStr}</strong></div>
-    <div class="pill">Team: <strong>${crewCount}</strong> · Hours required: <strong>${requiredHours.toFixed(2)}</strong> · Planned days: <strong>${plannedDays}</strong>${allowLongDay? ' (long-day option)':''}</div>
-  `;
+        const lines = [];
+        const add = (label, costIncGST) => {
+          const cost = costIncGST * gstFactor;
+          if(cost > 0) lines.push({label, cost});
+        };
 
-  // Breakdown table
-  const tbl = document.getElementById('breakdownTbl');
-  tbl.innerHTML = `<thead><tr><th>Item</th><th>Qty</th><th class="right">Cost</th></tr></thead>`;
-  const tb = document.createElement('tbody');
-  lines.forEach(l=>{ const tr=document.createElement('tr'); tr.innerHTML = `<td>${l.label}</td><td>${l.qty}</td><td class="right">${money(l.cost)}</td>`; tb.appendChild(tr); });
-  const trSub=document.createElement('tr'); trSub.innerHTML=`<td><strong>Subtotal</strong></td><td></td><td class="right"><strong>${money(exTotal)}</strong></td>`; tb.appendChild(trSub);
-  if(includeGST){ const trGST=document.createElement('tr'); trGST.innerHTML = `<td>GST (10%)</td><td></td><td class="right">${money(gst)}</td>`; tb.appendChild(trGST); }
-  const trTot=document.createElement('tr'); trTot.innerHTML=`<td><strong>Total ${includeGST? 'inc' : 'ex'} GST</strong></td><td></td><td class="right"><strong>${includeGST? money(totalIncGST): money(exTotal)}</strong></td>`; tb.appendChild(trTot);
-  tbl.appendChild(tb);
+        // Tile roof affects gutters + corners + rakes + gutter guard
+        add("Gutters", (lengthM * PRICING.guttersPerM[storeys]) * tileFactor);
+        add("Corners", (corners * PRICING.cornerEach) * tileFactor);
+        add("Rakes", (rakes * PRICING.rakeEach) * tileFactor);
 
-  // Category table
-  const billedHours = requiredHours; // hours charged (uplifts affect $ not hours)
-  const catTbl = document.getElementById('categoryTbl');
-  catTbl.innerHTML = `<thead><tr><th>Category</th><th class="right">Amount</th></tr></thead>`;
-  const ctb = document.createElement('tbody');
-  const catRows = [
-    [`Labour (billed ${billedHours.toFixed(2)} hrs)`, totals.labour],
-    ['Materials', totals.materials],
-    ['Hire equipment', totals.hire],
-    ['Other', totals.other],
-  ];
-  catRows.forEach(([name,val])=>{ const tr=document.createElement('tr'); tr.innerHTML = `<td>${name}</td><td class="right">${money(val)}</td>`; ctb.appendChild(tr); });
-  const trCatSum=document.createElement('tr'); trCatSum.innerHTML = `<td><strong>Sum (ex GST)</strong></td><td class="right"><strong>${money(exTotal)}</strong></td>`; ctb.appendChild(trCatSum);
-  catTbl.appendChild(ctb);
+        const guardBlocks = guardsM / 10;
+        add("Gutter guard", (guardBlocks * PRICING.guardPer10M[storeys]) * tileFactor);
 
-  // Margin guidance vs target
-  const marginOnSell = targetSell>0 ? (1 - exTotal/targetSell) * 100 : 0;
-  const marginMsg = document.getElementById('marginMsg');
-  let cls = 'ok';
-  if(marginOnSell < 68) cls = 'bad';
-  else if(marginOnSell < 70) cls = 'warn';
-  marginMsg.innerHTML = `<div>Achieved margin at target sell: <span class="${cls}">${marginOnSell.toFixed(1)}%</span></div>`;
-}
+        // Downpipes NOT affected by tile
+        const dpRate = PRICING.downpipeEach[els.downpipeType.value][storeys];
+        add("Downpipes", downpipes * dpRate);
 
-// Wire up
-function onReady(){
-  document.getElementById('calcBtn').addEventListener('click', calcEstimate);
-  Array.from(document.querySelectorAll('input,select')).forEach(el=>el.addEventListener('input', calcEstimate));
-  calcEstimate();
-  maybeRunTests();
-}
-if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', onReady); else onReady();
+        add("Difficult access allowance", accessAllowance);
 
-/*****************
- * SELF-TESTS
- *****************/
-function snapshotForm(){
-  const data = {};
-  Array.from(document.querySelectorAll('input,select')).forEach(el=>{
-    data[el.id] = el.type==='checkbox' ? el.checked : el.value;
-  });
-  return data;
-}
-function restoreForm(data){
-  Array.from(document.querySelectorAll('input,select')).forEach(el=>{
-    if(!(el.id in data)) return;
-    if(el.type==='checkbox') el.checked = !!data[el.id]; else el.value = data[el.id];
-  });
-}
-function getExTotal(){
-  const rows = document.querySelectorAll('#breakdownTbl tbody tr');
-  if(!rows.length) return 0;
-  // last row is Total; previous row is GST optional; we already know ex total from subtotal row
-  const subRow = Array.from(rows).find(r=>/Subtotal/.test(r.textContent));
-  if(!subRow) return 0;
-  const val = subRow.querySelector('td.right').textContent;
-  return Number(val.replace(/[^0-9.\-]/g,''));
-}
-function getCategoryValueByRow(idx){
-  const row = document.querySelector(`#categoryTbl tbody tr:nth-child(${idx}) td.right`);
-  return row ? Number(row.textContent.replace(/[^0-9.\-]/g,'')) : 0;
-}
-function maybeRunTests(){
-  const params = new URLSearchParams(location.search);
-  if(params.get('showTests') !== '1') return; // opt-in only
-  const out = [];
-  const testsDiv = document.getElementById('tests');
-  testsDiv.style.display = 'block';
-  const orig = snapshotForm();
+        if(twoDay) add("2nd day setup time", PRICING.secondDaySetup);
 
-  // Test D: 2-person team, ~16 crew-hrs => 1 day (no long-day override required)
-  document.getElementById('crewCount').value = 2;
-  document.getElementById('allowLongDay').checked = false;
-  document.getElementById('lengthM').value = 0;
-  document.getElementById('downpipes').value = 0;
-  document.getElementById('gutterType').value = 'colorbond';
-  document.getElementById('guardType').value = 'none';
-  document.getElementById('needRemoval').checked = false;
-  document.getElementById('needCleaning').checked = false;
-  document.getElementById('storeys').value = 'single';
-  document.getElementById('pitch').value = 'low';
-  // Back solve length roughly: singleTechHours ≈ 8 → crew-hrs ≈ 16
-  document.getElementById('lengthM').value = Math.round((8 - PRODUCTIVITY.setupBaseHours) / PRODUCTIVITY.gutterHoursPerM);
-  calcEstimate();
-  let txt = document.getElementById('estSummary').textContent;
-  out.push(/Planned days: 1/.test(txt) ? 'Test D PASS' : 'Test D FAIL');
+        if(els.scaffolding.checked){
+          let s = PRICING.scaffoldingDefault;
+          if(els.difficultScaffolding.checked) s *= PRICING.difficultScaffoldingMultiplier;
+          add("Scaffolding", s);
+        } else {
+          els.difficultScaffolding.checked = false;
+        }
+        els.difficultScaffolding.disabled = !els.scaffolding.checked;
 
-  // Test E: long-day option with crew-hrs ≤20 → 1 day
-  document.getElementById('allowLongDay').checked = true;
-  document.getElementById('lengthM').value = Math.round((9 - PRODUCTIVITY.setupBaseHours) / PRODUCTIVITY.gutterHoursPerM); // ~18 crew-hrs
-  calcEstimate();
-  txt = document.getElementById('estSummary').textContent;
-  out.push(/Planned days: 1/.test(txt) ? 'Test E PASS' : 'Test E FAIL');
+        if(els.boom.checked){
+          add("Boom lift", PRICING.boomTravel + (PRICING.boomPerDay * (twoDay ? 2 : 1)));
+        }
 
-  // Test F: over 20 crew-hrs with long-day → 2 days
-  document.getElementById('lengthM').value = Math.round((10.6 - PRODUCTIVITY.setupBaseHours) / PRODUCTIVITY.gutterHoursPerM); // ~21+ crew-hrs
-  calcEstimate();
-  txt = document.getElementById('estSummary').textContent;
-  out.push(/Planned days: 2/.test(txt) ? 'Test F PASS' : 'Test F FAIL');
+        const total = lines.reduce((sum, l)=>sum + l.cost, 0);
 
-  // Test G: labour category equals required-hrs * rate when no uplifts
-  document.getElementById('allowLongDay').checked = false;
-  document.getElementById('tiledRoof').checked = false;
-  document.getElementById('urgent').checked = false;
-  document.getElementById('lengthM').value = Math.round((6 - PRODUCTIVITY.setupBaseHours) / PRODUCTIVITY.gutterHoursPerM); // yields some required hours
-  calcEstimate();
-  const labourValG = getCategoryValueByRow(1);
-  const pillTextG = document.getElementById('estSummary').textContent;
-  const mHours = /Hours required: ([0-9.]+)/.exec(pillTextG);
-  const hoursReq = mHours ? parseFloat(mHours[1]) : 0;
-  const expectLabour = hoursReq * LABOUR_RATE;
-  out.push(Math.abs(labourValG - expectLabour) < 0.01 ? 'Test G PASS' : `Test G FAIL (expected ${expectLabour}, got ${labourValG})`);
+        els.topPills.innerHTML = `
+          <div class="pill">Total (${excludeGST ? "ex" : "inc"} GST): <strong>${money(total)}</strong></div>
+        `;
 
-  // Test H: Urgent uplift adds 25% of base labour (no tiled)
-  document.getElementById('urgent').checked = true;
-  calcEstimate();
-  const labourValH = getCategoryValueByRow(1);
-  out.push(labourValH > labourValG && Math.abs(labourValH - (expectLabour * 1.25)) < 1 ? 'Test H PASS' : 'Test H FAIL');
+        els.breakdown.innerHTML = `
+          <thead><tr><th>Item</th><th class="right">Price (${excludeGST ? "ex" : "inc"} GST)</th></tr></thead>
+          <tbody>
+            ${lines.map(l=>`<tr><td>${l.label}</td><td class="right">${money(l.cost)}</td></tr>`).join("")}
+            <tr><td><strong>Total</strong></td><td class="right"><strong>${money(total)}</strong></td></tr>
+          </tbody>
+        `;
+      }
 
-  // Test I: Target sell displays GST correctly when toggled on
-  document.getElementById('includeGST').checked = true;
-  calcEstimate();
-  const exTotal = getExTotal();
-  const expectedSellInc = (exTotal / (1 - 0.70)) * 1.10; // add GST to sell
-  const sellText = document.getElementById('estSummary').textContent;
-  const mSell = /Target sell \(~70% margin\): \$([0-9,\.]+)/.exec(sellText);
-  let gotSellInc = 0;
-  if(mSell){ gotSellInc = Number(mSell[1].replace(/[,]/g,'')); }
-  out.push(Math.abs(gotSellInc - expectedSellInc) < 1 ? 'Test I PASS' : `Test I FAIL (expected ${expectedSellInc.toFixed(2)}, got ${gotSellInc.toFixed(2)})`);
+      document.querySelectorAll("#app input, #app select").forEach(el=>{
+        el.addEventListener("input", calc);
+        el.addEventListener("change", calc);
+      });
 
-  document.getElementById('testOutput').textContent = out.join('\n');
-  restoreForm(orig);
-  calcEstimate();
-}
-</script>
-
+      calc();
+    }
+  </script>
 </body>
 </html>
