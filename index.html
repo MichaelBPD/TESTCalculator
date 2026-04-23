@@ -197,7 +197,9 @@
                 adjustedMaterialCost = materialCost * 1.2;
             }
 
-            let adjustedSubbieCost = subbieCost * 1.5 * ((100 - gpTarget) / 100);            /*
+            let adjustedSubbieCost = subbieCost;   
+            adjustedSubbieCost = subbieCost * 1.5 * ((100 - gpTarget) / 100);   
+            /*
             if (subbieCost > 1000) {
                 adjustedSubbieCost = subbieCost * 0.39;
             } else if (subbieCost > 500) {
@@ -214,7 +216,7 @@
             */
             const TotalCost = techCost + appCost + ((adjustedSubbieCost + adjustedMaterialCost + otherCost) * 1.05);
             const gpPercentage = ((quoteTotal - TotalCost) / quoteTotal) * 100;
-            const quoteVariation = (TotalCost / (1 - (gpTarget / 100));
+            const quoteVariation = (TotalCost / (1 - (gpTarget / 100)));
      
             // Update the result elements
             //document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
