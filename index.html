@@ -169,6 +169,7 @@
         // Function to calculate the results
  function calculate() {
             // Get values from input fields and convert empty/null values to 0
+            const gpTarget = 70;
             const quoteTotal = parseFloat(document.getElementById('quoteTotal').value) || 0;
             const techHours = parseFloat(document.getElementById('techHours').value) || 0;
             const appHours = parseFloat(document.getElementById('apprenticeHours').value) || 0;
@@ -180,6 +181,7 @@
             const techCost = techHours * 228;
             const appCost = appHours * 150;
 
+     
             let adjustedMaterialCost = materialCost;
             if (materialCost > 1000) {
                 adjustedMaterialCost = materialCost * 0.39;
@@ -195,7 +197,7 @@
                 adjustedMaterialCost = materialCost * 1.2;
             }
 
-            let adjustedSubbieCost = subbieCost * 1.5;            /*
+            let adjustedSubbieCost = subbieCost * 1.5 * ((100 - gpTarget) / 100);            /*
             if (subbieCost > 1000) {
                 adjustedSubbieCost = subbieCost * 0.39;
             } else if (subbieCost > 500) {
@@ -212,13 +214,13 @@
             */
             const TotalCost = techCost + appCost + ((adjustedSubbieCost + adjustedMaterialCost + otherCost) * 1.05);
             const gpPercentage = ((quoteTotal - TotalCost) / quoteTotal) * 100;
-            const quoteVariation = (TotalCost / 0.3);
+            const quoteVariation = (TotalCost / (1 - (gpTarget / 100));
      
             // Update the result elements
             //document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
             const gpMessage = document.getElementById('gpMessage');
 
-            if (gpPercentage < 70) {
+            if (gpPercentage < gpTarget) {
                 gpMessage.innerHTML = 'Current GP calculated $<span class="quote-variation">' + gpPercentage.toFixed(1) + '%</span><br>Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span> to be priced correctly.';
             } else {
                 gpMessage.innerHTML = 'Current GP calculated $<span class="quote-variation">' + gpPercentage.toFixed(1) + '%</span><br>Quoted price correctly'; // Clear the message if GP % is 65% or higher
