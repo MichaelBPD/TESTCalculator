@@ -9,7 +9,7 @@
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
-        background-color: #463a80;
+        background-color: #ffe100;
     }
         
     .container {
@@ -33,7 +33,7 @@
     h1 {
         text-align: center;
         margin-top: 20px;
-        color: #ffffff;
+        color: #ec008c;
     }
     
     form {
@@ -81,7 +81,7 @@
     h2 {
         text-align: center;
         margin-top: 20px;
-        color: #00890d;
+        color: #ec008c;
     }
     
     p {
@@ -92,7 +92,7 @@
     
     span {
         font-weight: bold;
-        color: #00890d;
+        color: #ec008c;
     }
     .results-box {
         max-width: 400px;
@@ -114,7 +114,7 @@
         
     .quote-variation {
         font-weight: bold;
-        color: #00890d; 
+        color: #ec008c; 
     }
 
     </style>
@@ -122,40 +122,36 @@
 <body>
     <script>
         // Define the correct password
-        const correctPassword = "9463";
+        const correctPassword = "8008";
         const enteredPassword = prompt("Please enter the password:");
 
         if (enteredPassword === correctPassword) {
             // Inserting your form and container directly into the body
             document.body.innerHTML = `
-                 <h1>Quote Calculator</h1>
+                <h1>Quote Calculator</h1>
                 <form>
-                    <label for="quoteTotal">Quote Total:</label>
-                    <input type="number" id="quoteTotal"><br>
-            
-                    <label for="techHours">Technician Hours:</label>
+                    <label for="techHours">Plumber/Roofer Hours:</label>
                     <input type="number" id="techHours"><br>
-            
+
                     <label for="apprenticeHours">Apprentice Hours:</label>
                     <input type="number" id="apprenticeHours"><br>
-            
-                    <label for="subbieCost">Plant Hire and Subbie Cost:</label>
+
+                    <label for="subbieCost">Subbie Cost:</label>
                     <input type="number" id="subbieCost"><br>
 
-                    <label for="otherCost">External Skilled Trade Subbie Cost (Plumber/Electrician/Roofer/ETC...):</label>
-                    <input type="number" id="externalSubbieCost"><br>
-                    
                     <label for="materialCost">Material Cost:</label>
                     <input type="number" id="materialCost"><br>
-            
-                    <label for="otherCost">QBCC FORM 4, Home Insurance, Documentation:</label>
+
+                    <label for="otherCost">Other Cost:</label>
                     <input type="number" id="otherCost"><br>
+                    
+                    <label for="quoteTotal">Quote Total:</label>
+                    <input type="number" id="quoteTotal"><br>    
                 </form>
-            
+                
                 <div class="container">
                     <div class="left-column">
                         <h2>Results:</h2>
-                        <p>GP %: <span id="gpPercentage">0.00</span>%</p>
                         <p id="gpMessage"></p>
                     </div>
                     <div class="right-column">
@@ -163,6 +159,7 @@
                     </div>
                 </div>
             `;
+            //                        <p>GP %: <span id="gpPercentage">0.00</span>%</p>
         } else {
             document.body.innerHTML = "<p>Access denied. Incorrect password.</p>";
         }
@@ -173,7 +170,7 @@
  function calculate() {
             // Get values from input fields and convert empty/null values to 0
             const gpTarget = 70;
-            const TechHourlyRate = 690;
+            const TechHourlyRate = 650;
             const AppHourlyRate = 450;
             const quoteTotal = parseFloat(document.getElementById('quoteTotal').value) || 0;
             const techHours = parseFloat(document.getElementById('techHours').value) || 0;
@@ -181,49 +178,59 @@
             const subbieCost = parseFloat(document.getElementById('subbieCost').value) || 0;
             const materialCost = parseFloat(document.getElementById('materialCost').value) || 0;
             const otherCost = parseFloat(document.getElementById('otherCost').value) || 0;
-            const externalSubbieCost = parseFloat(document.getElementById('externalSubbieCost').value) || 0;
     
             // Calculate Technician Cost, Apprentice Cost, and GP Percentage
             const techCost = techHours * TechHourlyRate * ((100 - gpTarget) / 100);
             const appCost = appHours * AppHourlyRate * ((100 - gpTarget) / 100);
 
+            
             let adjustedMaterialCost = materialCost;
-            if (materialCost > 500) {
-                adjustedMaterialCost = materialCost * 0.375;
+            /*
+            if (materialCost > 1000) {
+                adjustedMaterialCost = materialCost * 0.39;
+            } else if (materialCost > 500) {
+                adjustedMaterialCost = materialCost * 0.486;
             } else if (materialCost > 250) {
-                adjustedMaterialCost = materialCost * 0.471;
+                adjustedMaterialCost = materialCost * 0.54;
             } else if (materialCost > 100) {
-                adjustedMaterialCost = materialCost * 0.516;
-            } else if (materialCost > 55) {
-                adjustedMaterialCost = materialCost * 0.576;
-            } else if (materialCost > 25) {
-                adjustedMaterialCost = materialCost * 0.606;
+                adjustedMaterialCost = materialCost * 0.9;
+            } else if (materialCost > 30) {
+                adjustedMaterialCost = materialCost * 1.05;
             } else {
-                adjustedMaterialCost = materialCost * 0.75;
+                adjustedMaterialCost = materialCost * 1.2;
             }
-
-            let adjustedSubbieCost = subbieCost;
-            if (subbieCost > 500) {
-                adjustedSubbieCost = subbieCost * 0.5;
+            */
+            
+            let adjustedSubbieCost = subbieCost;   
+            adjustedSubbieCost = subbieCost * 1.5 * ((100 - gpTarget) / 100);   
+            /*
+            if (subbieCost > 1000) {
+                adjustedSubbieCost = subbieCost * 0.39;
+            } else if (subbieCost > 500) {
+                adjustedSubbieCost = subbieCost * 0.486;
+            } else if (subbieCost > 250) {
+                adjustedSubbieCost = subbieCost * 0.54;
+            } else if (subbieCost > 100) {
+                adjustedSubbieCost = subbieCost * 0.9;
+            } else if (subbieCost > 30) {
+                adjustedSubbieCost = subbieCost * 1.05;
             } else {
-                adjustedSubbieCost = subbieCost * 0.6;
+                adjustedSubbieCost = subbieCost * 1.2;
             }
+            */
 
-            const adjustedOtherCost = otherCost * .375;
-
-            let adjustedExternalSubbieCost = externalSubbieCost * 1.5 * ((100 - gpTarget) / 100); 
-   
-            const TotalCost = techCost + appCost + subbieCost + externalSubbieCost + materialCost + otherCost;
+            const TotalCost = techCost + appCost + subbieCost + materialCost + otherCost;
             const gpPercentage = ((quoteTotal - TotalCost) / quoteTotal) * 100;
-            const quoteVariation = (TotalCost / 0.3);
-
+            const quoteVariation = (TotalCost / (1 - (gpTarget / 100)));
+     
             // Update the result elements
-            document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
+            //document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
             const gpMessage = document.getElementById('gpMessage');
-            if (gpPercentage < 70) {
-                gpMessage.innerHTML = 'Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span> for 70% GP';
+
+            if (gpPercentage < gpTarget) {
+                gpMessage.innerHTML = 'Current GP calculated $<span class="quote-variation">' + gpPercentage.toFixed(1) + '%</span><br>Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span> to be priced correctly.';
             } else {
-                gpMessage.textContent = ''; // Clear the message if GP % is 70% or higher
+                gpMessage.innerHTML = 'Current GP calculated $<span class="quote-variation">' + gpPercentage.toFixed(1) + '%</span><br>Quoted price correctly'; // Clear the message if GP % is 65% or higher
             }
         }
     
