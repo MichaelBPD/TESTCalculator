@@ -170,6 +170,8 @@
  function calculate() {
             // Get values from input fields and convert empty/null values to 0
             const gpTarget = 70;
+            const TechHourlyRate = 760;
+            const AppHourlyRate = 500;
             const quoteTotal = parseFloat(document.getElementById('quoteTotal').value) || 0;
             const techHours = parseFloat(document.getElementById('techHours').value) || 0;
             const appHours = parseFloat(document.getElementById('apprenticeHours').value) || 0;
@@ -178,11 +180,12 @@
             const otherCost = parseFloat(document.getElementById('otherCost').value) || 0;
     
             // Calculate Technician Cost, Apprentice Cost, and GP Percentage
-            const techCost = techHours * 228;
-            const appCost = appHours * 150;
+            const techCost = techHours * TechHourlyRate * ((100 - gpTarget) / 100);
+            const appCost = appHours * AppHourlyRate * ((100 - gpTarget) / 100);
 
-     
+            
             let adjustedMaterialCost = materialCost;
+            /*
             if (materialCost > 1000) {
                 adjustedMaterialCost = materialCost * 0.39;
             } else if (materialCost > 500) {
@@ -196,7 +199,8 @@
             } else {
                 adjustedMaterialCost = materialCost * 1.2;
             }
-
+            */
+            
             let adjustedSubbieCost = subbieCost;   
             adjustedSubbieCost = subbieCost * 1.5 * ((100 - gpTarget) / 100);   
             /*
@@ -214,7 +218,8 @@
                 adjustedSubbieCost = subbieCost * 1.2;
             }
             */
-            const TotalCost = techCost + appCost + adjustedSubbieCost + ((adjustedMaterialCost + otherCost) * 1.05);
+
+            const TotalCost = techCost + appCost + subbieCost + ((materialCost + otherCost) * 1.05);
             const gpPercentage = ((quoteTotal - TotalCost) / quoteTotal) * 100;
             const quoteVariation = (TotalCost / (1 - (gpTarget / 100)));
      
