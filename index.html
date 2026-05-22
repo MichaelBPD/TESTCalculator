@@ -239,12 +239,12 @@
             //document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
             const gpMessage = document.getElementById('gpMessage');
 
-            const paymentMessage = '<br>Original total: $<span class="quote-variation"><br>' + quoteTotal.toFixed(2) + '</span>' +
-                '<br>Cash/Credit discounted total: <br>$<span class="quote-variation"><br>' + discountedQuoteTotal.toFixed(2) + '</span>';
+            const paymentMessage = '<br>Original total: <br>$<span class="quote-variation">' + quoteTotal.toFixed(2) + '</span>' +
+                '<br>Cash discount total: <br>$<span class="quote-variation">' + discountedQuoteTotal.toFixed(2) + '</span>';
 
             if (gpPercentage < gpTarget) {
-                gpMessage.innerHTML = 'Current GP calculated <span class="quote-variation"><br>' + gpPercentage.toFixed(1) + '%</span><br>' + paymentMessage + '<br>Change quoted price to $<span class="quote-variation"><br>' + Math.ceil(quoteVariation) + '</span>' +
-                '<br>Discounted Cash/Credit price: $<span class="quote-variation"><br>' + Math.ceil(discountedQuoteVariation) + '</span>';
+                gpMessage.innerHTML = 'Current GP calculated <span class="quote-variation"><br>' + gpPercentage.toFixed(1) + '%</span>' + paymentMessage + '<br>Change quoted price to <br>$<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span>' +
+                '<br>Discounted Cash price: <br>$<span class="quote-variation">' + Math.ceil(discountedQuoteVariation) + '</span>';
             } else {
                 gpMessage.innerHTML = 'Current GP calculated <span class="quote-variation"><br>' + gpPercentage.toFixed(1) + '%</span><br>' + paymentMessage + '<br>Quoted price correctly'; // Clear the message if GP % is 65% or higher
             }
