@@ -160,14 +160,7 @@
                     
                     <label for="quoteTotal">Quote Total:</label>
                     <input type="number" id="quoteTotal"><br>
-
-                    
-                    <label for="cashToggle">
-                        <input type="checkbox" id="cashToggle" style="width:auto; margin-right:8px;">
-                        Cash Payment (Apply 5% Discount)
-                    </label><br>
-    
-                </form>
+</form>
                 
                 <div class="container">
                     <div class="left-column">
@@ -192,11 +185,8 @@
             const gpTarget = 70;
             const MarkupPerc = 1.05;
             const cashDiscountPerc = 1.05;
-            const enteredQuoteTotal = parseFloat(document.getElementById('quoteTotal').value) || 0;
-            const cashSelected = document.getElementById('cashToggle').checked;
-            const quoteTotal = cashSelected
-                ? enteredQuoteTotal / cashDiscountPerc
-                : enteredQuoteTotal;
+            const quoteTotal = parseFloat(document.getElementById('quoteTotal').value) || 0;
+            const discountedQuoteTotal = quoteTotal / cashDiscountPerc;
             const techHours = parseFloat(document.getElementById('techHours').value) || 0;
             const appHours = parseFloat(document.getElementById('apprenticeHours').value) || 0;
             const subbieCost = parseFloat(document.getElementById('subbieCost').value) || 0;
@@ -241,22 +231,20 @@
             */
 
             const TotalCost = techCost + appCost + adjustedSubbieCost + ((adjustedMaterialCost + otherCost) * 1.05);
-            const gpPercentage = (((quoteTotal - (TotalCost) * MarkupPerc * cashDiscountPerc) / quoteTotal)) * 100;
-            const quoteVariation = (TotalCost / (1 - (gpTarget / 100)) * MarkupPerc * cashDiscountPerc);
-            const requiredEnteredQuote = cashSelected
-                ? quoteVariation / cashDiscountPerc
-                : quoteVariation;
+            const gpPercentage = (((quoteTotal - (TotalCost) * MarkupPerc) / quoteTotal)) * 100;
+            const quoteVariation = (TotalCost / (1 - (gpTarget / 100)) * MarkupPerc);
+            const discountedQuoteVariation = quoteVariation / cashDiscountPerc;
      
             // Update the result elements
             //document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
             const gpMessage = document.getElementById('gpMessage');
 
-            const paymentMessage = cashSelected
-                ? '<br>Cash discounted total: $<span class="quote-variation">' + quoteTotal.toFixed(2) + '</span>'
-                : '<br>Standard total: $<span class="quote-variation">' + quoteTotal.toFixed(2) + '</span>';
+            const paymentMessage = '<br>Original total: $<span class="quote-variation">' + quoteTotal.toFixed(2) + '</span>' +
+                '<br>Cash/Credit discounted total: $<span class="quote-variation">' + discountedQuoteTotal.toFixed(2) + '</span>';
 
             if (gpPercentage < gpTarget) {
-                gpMessage.innerHTML = 'Current GP calculated <span class="quote-variation">' + gpPercentage.toFixed(1) + '%</span>' + paymentMessage + '<br>Change quoted price to $<span class="quote-variation">' + Math.ceil(requiredEnteredQuote) + '</span> to be priced correctly.';
+                gpMessage.innerHTML = 'Current GP calculated <span class="quote-variation">' + gpPercentage.toFixed(1) + '%</span>' + paymentMessage + '<br>Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span>' +
+                '<br>Discounted Cash/Credit price: $<span class="quote-variation">' + Math.ceil(discountedQuoteVariation) + '</span>';
             } else {
                 gpMessage.innerHTML = 'Current GP calculated <span class="quote-variation">' + gpPercentage.toFixed(1) + '%</span>' + paymentMessage + '<br>Quoted price correctly'; // Clear the message if GP % is 65% or higher
             }
