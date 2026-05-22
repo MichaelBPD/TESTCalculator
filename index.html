@@ -62,7 +62,7 @@
         box-sizing: border-box; /* Include padding and border in the total width */
     }
   
-    input[type="text"] {
+    input[type="text"], select {
         width: 100%; /* Make the input fields span the full width of the container */
         padding: 8px;
         margin-bottom: 15px;
@@ -142,9 +142,7 @@
                 <form>
                     <label for="estName">Estimate Name:</label>
                     <input type="text" id="estName"><br>
-                </form>
 
-                <form>
                     <label for="techHours">Plumber/Roofer Hours:</label>
                     <input type="number" id="techHours"><br>
 
@@ -161,7 +159,13 @@
                     <input type="number" id="otherCost"><br>
                     
                     <label for="quoteTotal">Quote Total:</label>
-                    <input type="number" id="quoteTotal"><br>    
+                    <input type="number" id="quoteTotal"><br>
+
+                    <label for="paymentType">Cash/Credit:</label>
+                    <select id="paymentType">
+                        <option value="credit" selected>Credit - no discount</option>
+                        <option value="cash">Cash - 5% discount</option>
+                    </select><br>    
                 </form>
                 
                 <div class="container">
@@ -186,7 +190,12 @@
             // Get values from input fields and convert empty/null values to 0
             const gpTarget = 70;
             const MarkupPerc = 1.05;
-            const quoteTotal = parseFloat(document.getElementById('quoteTotal').value) || 0;
+            const cashDiscountPerc = 5;
+            const enteredQuoteTotal = parseFloat(document.getElementById('quoteTotal').value) || 0;
+            const paymentType = document.getElementById('paymentType').value;
+            const quoteTotal = paymentType === 'cash'
+                ? enteredQuoteTotal * (1 - cashDiscountPerc / 100)
+                : enteredQuoteTotal;
             const techHours = parseFloat(document.getElementById('techHours').value) || 0;
             const appHours = parseFloat(document.getElementById('apprenticeHours').value) || 0;
             const subbieCost = parseFloat(document.getElementById('subbieCost').value) || 0;
@@ -238,10 +247,14 @@
             //document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
             const gpMessage = document.getElementById('gpMessage');
 
+            const paymentMessage = paymentType === 'cash'
+                ? '<br>Cash discounted total: $<span class="quote-variation">' + quoteTotal.toFixed(2) + '</span>'
+                : '<br>Credit total: $<span class="quote-variation">' + quoteTotal.toFixed(2) + '</span>';
+
             if (gpPercentage < gpTarget) {
-                gpMessage.innerHTML = 'Current GP calculated $<span class="quote-variation">' + gpPercentage.toFixed(1) + '%</span><br>Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span> to be priced correctly.';
+                gpMessage.innerHTML = 'Current GP calculated <span class="quote-variation">' + gpPercentage.toFixed(1) + '%</span>' + paymentMessage + '<br>Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span> to be priced correctly.';
             } else {
-                gpMessage.innerHTML = 'Current GP calculated $<span class="quote-variation">' + gpPercentage.toFixed(1) + '%</span><br>Quoted price correctly'; // Clear the message if GP % is 65% or higher
+                gpMessage.innerHTML = 'Current GP calculated <span class="quote-variation">' + gpPercentage.toFixed(1) + '%</span>' + paymentMessage + '<br>Quoted price correctly'; // Clear the message if GP % is 65% or higher
             }
         }
     
