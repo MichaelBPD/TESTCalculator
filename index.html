@@ -243,10 +243,10 @@
                 '<br>Cash/Credit discounted total: $<span class="quote-variation">' + discountedQuoteTotal.toFixed(2) + '</span>';
 
             if (gpPercentage < gpTarget) {
-                gpMessage.innerHTML = 'Current GP calculated <span class="quote-variation">' + gpPercentage.toFixed(1) + '%</span>' + paymentMessage + '<br>Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span>' +
-                '<br>Discounted Cash/Credit price: $<span class="quote-variation">' + Math.ceil(discountedQuoteVariation) + '</span>';
+                gpMessage.innerHTML = 'Current GP calculated <span class="quote-variation"><br>' + gpPercentage.toFixed(1) + '%</span>' + paymentMessage + '<br>Change quoted price to $<span class="quote-variation"><br>' + Math.ceil(quoteVariation) + '</span>' +
+                '<br>Discounted Cash/Credit price: $<span class="quote-variation"><br>' + Math.ceil(discountedQuoteVariation) + '</span>';
             } else {
-                gpMessage.innerHTML = 'Current GP calculated <span class="quote-variation">' + gpPercentage.toFixed(1) + '%</span>' + paymentMessage + '<br>Quoted price correctly'; // Clear the message if GP % is 65% or higher
+                gpMessage.innerHTML = 'Current GP calculated <span class="quote-variation"><br>' + gpPercentage.toFixed(1) + '%</span><br>' + paymentMessage + '<br>Quoted price correctly'; // Clear the message if GP % is 65% or higher
             }
         }
     
