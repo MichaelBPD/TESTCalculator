@@ -191,6 +191,7 @@
             // Get values from input fields and convert empty/null values to 0
             const gpTarget = 70;
             const MarkupPerc = 1.05;
+            const FinancePerc = 1.05;
             const cashDiscountPerc = 5;
             const enteredQuoteTotal = parseFloat(document.getElementById('quoteTotal').value) || 0;
             const cashSelected = document.getElementById('cashToggle').checked;
@@ -241,8 +242,8 @@
             */
 
             const TotalCost = techCost + appCost + adjustedSubbieCost + ((adjustedMaterialCost + otherCost) * 1.05);
-            const gpPercentage = (((quoteTotal - (TotalCost) * MarkupPerc) / quoteTotal)) * 100;
-            const quoteVariation = (TotalCost / (1 - (gpTarget / 100)) * MarkupPerc);
+            const gpPercentage = (((quoteTotal - (TotalCost) * MarkupPerc * FinancePerc) / quoteTotal)) * 100;
+            const quoteVariation = (TotalCost / (1 - (gpTarget / 100)) * MarkupPerc * FinancePerc);
             const requiredEnteredQuote = cashSelected
                 ? quoteVariation * (1 - cashDiscountPerc / 100)
                 : quoteVariation;
