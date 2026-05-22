@@ -239,8 +239,8 @@
             //document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
             const gpMessage = document.getElementById('gpMessage');
 
-            const paymentMessage = '<br>Original total: <br>$<span class="quote-variation">' + quoteTotal.toFixed(2) + '</span>' +
-                '<br>Cash discount total: <br>$<span class="quote-variation">' + discountedQuoteTotal.toFixed(2) + '</span>';
+            const paymentMessage = '<br>Original total: <br>$<span class="quote-variation">' + Math.ceil(quoteTotal) + '</span>' +
+                '<br>Cash discount total: <br>$<span class="quote-variation">' + Math.ceil(discountedQuoteTotal) + '</span>';
 
             if (gpPercentage < gpTarget) {
                 gpMessage.innerHTML = 'Current GP calculated <span class="quote-variation"><br>' + gpPercentage.toFixed(1) + '%</span>' + paymentMessage + '<br>Change quoted price to <br>$<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span>' +
