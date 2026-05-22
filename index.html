@@ -243,6 +243,9 @@
             const TotalCost = techCost + appCost + adjustedSubbieCost + ((adjustedMaterialCost + otherCost) * 1.05);
             const gpPercentage = (((quoteTotal - (TotalCost) * MarkupPerc) / quoteTotal)) * 100;
             const quoteVariation = (TotalCost / (1 - (gpTarget / 100)) * MarkupPerc);
+            const requiredEnteredQuote = cashSelected
+                ? quoteVariation / (1 - cashDiscountPerc / 100)
+                : quoteVariation;
      
             // Update the result elements
             //document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
@@ -253,7 +256,7 @@
                 : '<br>Standard total: $<span class="quote-variation">' + quoteTotal.toFixed(2) + '</span>';
 
             if (gpPercentage < gpTarget) {
-                gpMessage.innerHTML = 'Current GP calculated <span class="quote-variation">' + gpPercentage.toFixed(1) + '%</span>' + paymentMessage + '<br>Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span> to be priced correctly.';
+                gpMessage.innerHTML = 'Current GP calculated <span class="quote-variation">' + gpPercentage.toFixed(1) + '%</span>' + paymentMessage + '<br>Change quoted price to $<span class="quote-variation">' + Math.ceil(requiredEnteredQuote) + '</span> to be priced correctly.';
             } else {
                 gpMessage.innerHTML = 'Current GP calculated <span class="quote-variation">' + gpPercentage.toFixed(1) + '%</span>' + paymentMessage + '<br>Quoted price correctly'; // Clear the message if GP % is 65% or higher
             }
