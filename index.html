@@ -244,7 +244,7 @@
             const gpPercentage = (((quoteTotal - (TotalCost) * MarkupPerc) / quoteTotal)) * 100;
             const quoteVariation = (TotalCost / (1 - (gpTarget / 100)) * MarkupPerc);
             const requiredEnteredQuote = cashSelected
-                ? quoteVariation / (1 - cashDiscountPerc / 100)
+                ? quoteVariation * (1 - cashDiscountPerc / 100)
                 : quoteVariation;
      
             // Update the result elements
