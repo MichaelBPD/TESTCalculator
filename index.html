@@ -161,11 +161,12 @@
                     <label for="quoteTotal">Quote Total:</label>
                     <input type="number" id="quoteTotal"><br>
 
-                    <label for="paymentType">Cash/Credit:</label>
-                    <select id="paymentType">
-                        <option value="credit" selected>Credit - no discount</option>
-                        <option value="cash">Cash - 5% discount</option>
-                    </select><br>    
+                    
+                    <label for="cashToggle">
+                        <input type="checkbox" id="cashToggle" style="width:auto; margin-right:8px;">
+                        Cash Payment (Apply 5% Discount)
+                    </label><br>
+    
                 </form>
                 
                 <div class="container">
@@ -192,8 +193,8 @@
             const MarkupPerc = 1.05;
             const cashDiscountPerc = 5;
             const enteredQuoteTotal = parseFloat(document.getElementById('quoteTotal').value) || 0;
-            const paymentType = document.getElementById('paymentType').value;
-            const quoteTotal = paymentType === 'cash'
+            const cashSelected = document.getElementById('cashToggle').checked;
+            const quoteTotal = cashSelected
                 ? enteredQuoteTotal * (1 - cashDiscountPerc / 100)
                 : enteredQuoteTotal;
             const techHours = parseFloat(document.getElementById('techHours').value) || 0;
@@ -247,9 +248,9 @@
             //document.getElementById('gpPercentage').textContent = isNaN(gpPercentage) ? '0.00' : gpPercentage.toFixed(2);
             const gpMessage = document.getElementById('gpMessage');
 
-            const paymentMessage = paymentType === 'cash'
+            const paymentMessage = cashSelected
                 ? '<br>Cash discounted total: $<span class="quote-variation">' + quoteTotal.toFixed(2) + '</span>'
-                : '<br>Credit total: $<span class="quote-variation">' + quoteTotal.toFixed(2) + '</span>';
+                : '<br>Standard total: $<span class="quote-variation">' + quoteTotal.toFixed(2) + '</span>';
 
             if (gpPercentage < gpTarget) {
                 gpMessage.innerHTML = 'Current GP calculated <span class="quote-variation">' + gpPercentage.toFixed(1) + '%</span>' + paymentMessage + '<br>Change quoted price to $<span class="quote-variation">' + Math.ceil(quoteVariation) + '</span> to be priced correctly.';
